@@ -1,18 +1,14 @@
 # import the Flask class from the flask module
-from flask import Flask, render_template
+from flask import Flask
+from src.users.user_controller import user_controller
 
 # create the application object
 app = Flask(__name__)
 
-# use decorators to link the function to a url
-@app.route('/')
-def home():
-    return "Hello, World!"  # return a string
+app.register_blueprint(user_controller, url_prefix="")
 
-@app.route('/welcome')
-def welcome():
-    return render_template('welcome.html')  # render a template
 
 # start the server with the 'run()' method
 if __name__ == '__main__':
     app.run(debug=True)
+    import backend.src.users.user_controller as user_controller
