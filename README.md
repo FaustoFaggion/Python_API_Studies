@@ -19,12 +19,14 @@ Python API
         $ sudo apt install python3-pip
 
     virtualenv:
-        $ python3 -m venv backend
+        $ python3 -m venv .venv
+            This will create the .venv directory if it doesn’t exist, and also create directories inside it containing a copy of the Python interpreter and various supporting files.
 
 ### Start
 
     * Create  dir backend inside repository
+    * Install venv into dir backend
     * Active virtualenv
       * $ source backend/bin/active
     * Install Flask
-      * $ pip install flask
+      * $ pip install Flask
