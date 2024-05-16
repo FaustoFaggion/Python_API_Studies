@@ -12,13 +12,14 @@ def create():
 def update():
     return UserService.update()
 
-@controller.route('/delete', methods= ['DELETE'])
-def delete():
-    return UserService.delete()
+@controller.route('/delete/<email>', methods= ['DELETE'])
+def delete(email):
+    print(email)
+    return UserService.delete(email)
 
-@controller.route('/findOne', methods= ['GET'])
-def findOne():
-    return UserService.findOne()
+@controller.route('/findOne/<email>', methods= ['GET'])
+def findOne(email):
+    return UserService.findOne(email)
 
 @controller.route('/findAll', methods= ['GET'])
 def findAll():

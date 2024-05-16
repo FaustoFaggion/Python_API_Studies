@@ -1,9 +1,11 @@
 from flask import Flask, request, jsonify
 from src.users.user_controller import controller
-import sqlite3
+from dataBase.sqlite_db import SqliteDb
 
 # create the application object
 app = Flask(__name__)
+
+SqliteDb.createTables()
 
 app.register_blueprint(controller, url_prefix="/users")
     

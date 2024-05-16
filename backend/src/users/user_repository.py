@@ -1,4 +1,4 @@
-from dataBase import sqlite_db
+from dataBase.sqlite_db import SqliteDb
 from flask import request, jsonify
 import json
 
@@ -8,8 +8,7 @@ class UserRepository():
         pass
 
     def create():
-        conn2 = sqlite_db.db_connection()
-        cursor = conn2.cursor()
+        conn = SqliteDb.db_connection()
         
         print(request.form.get("email"))
         new_email = request.form.get("email")
@@ -18,8 +17,8 @@ class UserRepository():
         new_password = request.form.get("password")
         
         sql = """INSERT INTO users (email, name, age, password) VALUES(?, ?, ?, ?)"""
-        cursor = conn2.execute(sql, (new_email, new_name, new_age, new_password))
-        conn2.commit()
+        cursor = conn.execute(sql, (new_email, new_name, new_age, new_password))
+        conn.commit()
         
         return "User created {cursor.lastthrowid}"
 
@@ -27,20 +26,35 @@ class UserRepository():
         user = "User updated into repository"
         return user
     
-    def delete():
-        user = "User deleted"
-        return user
+    def delete(email):
+        conn = SqliteDb.db_connection()
+        
+        sql = """DELETE FROM users WHERE email=?"""
+        conn.execute(sql, (email,))
+        conn.commit()
+         
+        return "User deleted"
 
-    def findOne():
-        user = "User found"
-        return user
+    def findOne(email):
+        conn = SqliteDb.db_connection()
+        cursor = conn.cursor()
         
+        sql = """SELECT * FROM users WHERE email=?"""
+        cursor.execute(sql, (email,))
         
+        rows = cursor.fetchall()
+        for r in rows:
+            user = r
+        if user is not None:
+            return jsonify(user), 200
+        else:
+            return "Something Wrong"    
         
     def findAll():
+        conn = SqliteDb.db_connection()
         cursor = conn.execute("SELECT * FROM users")
         users = [
-            dict(id=row[0], email=row[1], name=row[2], age=row[3], password=row[4])
+            dict(email=row[0], name=row[1], age=row[2], password=row[3])
             for row in cursor.fetchall()
         ]
         if users is not None:

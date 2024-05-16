@@ -13,13 +13,13 @@ class UserService():
         user = UserRepository.update()
         return user
     
-    def delete():
-        return UserRepository.delete()
+    def delete(email):
+        return UserRepository.delete(email)
 
-    def findOne():
-        user = UserRepository.findOne()
+    def findOne(email):
+        user = UserRepository.findOne(email)
         return user
     
     def findAll():
-        user = list(UserRepository.findAll())
+        user = UserRepository.findAll()
         return user
