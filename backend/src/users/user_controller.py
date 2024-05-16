@@ -1,12 +1,10 @@
 from flask import Blueprint
+from src.users.user_service import UserService
 
 user_controller = Blueprint("user_controller", __name__, static_folder="static", template_folder="template")
 
 # use decorators to link the function to a url
-@user_controller.route('/')
-def home():
-    return "Hello, World!"  # return a string
+@user_controller.route('/create')
+def create():
+    return UserService.create()
 
-# @app.route('/welcome')
-# def welcome():
-#     return render_template('welcome.html')  # render a template
