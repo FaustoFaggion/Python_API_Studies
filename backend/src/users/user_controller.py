@@ -1,10 +1,10 @@
-from flask import Blueprint
+from flask import Blueprint, request
 from src.users.user_service import UserService
 
 controller = Blueprint("user_controller", __name__, static_folder="static", template_folder="template")
 
 
-@controller.route('/create', methods= ['GET'])
+@controller.route('/create', methods= ['POST'])
 def create():
     return UserService.create()
 
