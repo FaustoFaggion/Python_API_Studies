@@ -35,16 +35,13 @@ class UserService():
         try:
             if not json_data:
                 return jsonify({ "error": "Invalid JSON data"})    
-
-            validate(instance=json_data, schema=CREATE_USER_SCHEMA)    
+            UserService.validate_dto(json_data)        
             dto: CreateUserDto = CreateUserDto(json_data)
-        
+            
         except jsonschema.ValidationError as e:
             return jsonify({"error": str(e)}), 400
         
-        # dto = UserService.validate_dto(json_data)        
         user = UserRepository.create(dto)
-        
         return user
     
     def update():
