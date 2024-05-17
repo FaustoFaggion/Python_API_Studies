@@ -22,18 +22,12 @@ class UserService():
     def __init__(self):
         pass
 
-    def validate_dto(json_data: str):
-        try:
-            if not json_data:
-                return jsonify({ "error": "Invalid JSON data"})    
+    def validate_dto(json_data):
+        if not json_data:
+            return jsonify({ "error": "Invalid JSON data"})    
+        validate(instance=json_data, schema=CREATE_USER_SCHEMA)    
 
-            validate(instance=json_data, schema=CREATE_USER_SCHEMA)    
-            dto: CreateUserDto = CreateUserDto(json_data)
-        
-        except jsonschema.ValidationError as e:
-            return jsonify({"error": str(e)}), 400
-        
-        return dto
+        return None
         
     def create():
         json_data = request.get_json()
