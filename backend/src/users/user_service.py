@@ -13,7 +13,8 @@ CREATE_USER_SCHEMA = {
         "age": {"type": "integer"},
         "password": {"type": "string"}
     },
-    "required": ["email", "name", "age", "password"]
+    "required": ["email", "name", "age", "password"],
+    "additionalProperties": False
 }
 
 class UserService():
