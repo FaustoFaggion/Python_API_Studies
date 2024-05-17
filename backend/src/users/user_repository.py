@@ -1,6 +1,7 @@
 from dataBase.sqlite_db import SqliteDb
 from flask import request, jsonify
 import json
+import sqlite3
 
 class UserRepository():
 
@@ -10,18 +11,24 @@ class UserRepository():
     def create():
         conn = SqliteDb.db_connection()
         
-        print(request.form.get("email"))
-        new_email = request.form.get("email")
-        new_name = request.form.get("name")
-        new_age = request.form.get("age")
-        new_password = request.form.get("password")
+        try:
+            json_data = request.get_json()
+            sql = """INSERT INTO users (email, name, age, password) VALUES(?, ?, ?, ?)"""
+            cursor = conn.execute(sql, (json_data["email"], json_data["name"], json_data["age"], json_data["password"]))
+            conn.commit()
+       
+            # Retrieve the newly inserted record
+            cursor = conn.execute("SELECT * FROM users WHERE email = ?", (json_data["email"],))
+            new_user = cursor.fetchone()
         
-        sql = """INSERT INTO users (email, name, age, password) VALUES(?, ?, ?, ?)"""
-        cursor = conn.execute(sql, (new_email, new_name, new_age, new_password))
-        conn.commit()
+        except sqlite3.IntegrityError as e:
+            conn.rollback()
+            return jsonify({ "error": str(e)}), 400
+        finally:
+            conn.close
         
-        return "User created {cursor.lastthrowid}"
-
+        return jsonify({"user": new_user})
+        
     def update():
         user = "User updated into repository"
         return user
