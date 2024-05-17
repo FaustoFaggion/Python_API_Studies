@@ -5,8 +5,8 @@ Content-Type: application/json
 {
     "email":"qd@email.com",
     "name":"Gi",
-    "age":40
-    # "password":"123"
-    # "outra": "erro"
+    "age":40,
+    "password":"123",
+    "outra": "erro"
 }
  
