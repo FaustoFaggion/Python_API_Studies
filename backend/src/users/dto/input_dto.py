@@ -7,8 +7,8 @@ class CreateUserDto:
     password:   str
     
     def __init__(self, json_data):
-        data = json.loads(json_data)
-        self.email = data["email"]
-        self.name = data["name"]
-        self.age = data["age"]
-        self.password = data["password"]
+       
+        self.email = json_data["email"]
+        self.name = json_data["name"]
+        self.age = json_data["age"]
+        self.password = json_data["password"]

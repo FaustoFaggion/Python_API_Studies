@@ -3,7 +3,7 @@ POST http://localhost:5000/users/create HTTP/1.1
 Content-Type: application/json
 
 {
-    "email":"pu@email.com",
+    "email":"sw@email.com",
     "name":"Gi",
     "age":"40",
     "password":"123"

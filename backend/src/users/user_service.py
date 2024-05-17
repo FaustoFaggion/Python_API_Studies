@@ -7,15 +7,27 @@ class UserService():
     def __init__(self):
         pass
 
-    def validate_created_user_json():
+    def validate_dto():
         json_data = request.get_json()
+        try:
+            if not json_data:
+                return jsonify({ "error": "Invalid JSON data"})    
+            dto: CreateUserDto = CreateUserDto(json_data)
+        except KeyError as err:
+            return jsonify({"error": str(err)}), 400
         
-        if type(json_data["email"]) != str:
-            return "Exception"
+        return dto
         
     def create():
-        UserService.validate_created_user_json()
-        user = UserRepository.create()
+        json_data = request.get_json()
+        try:
+            if not json_data:
+                return jsonify({ "error": "Invalid JSON data"})    
+            dto: CreateUserDto = CreateUserDto(json_data)
+        except KeyError as err:
+            return jsonify({"error": str(err)}), 400
+        
+        user = UserRepository.create(dto)
         
         return user
     

@@ -1,24 +1,24 @@
-from dataBase.sqlite_db import SqliteDb
 from flask import request, jsonify
 import json
 import sqlite3
+from dataBase.sqlite_db import SqliteDb
+from src.users.dto.input_dto import CreateUserDto
 
 class UserRepository():
 
     def __init__(self):
         pass
 
-    def create():
+    def create(dto):
         conn = SqliteDb.db_connection()
         
         try:
-            json_data = request.get_json()
             sql = """INSERT INTO users (email, name, age, password) VALUES(?, ?, ?, ?)"""
-            cursor = conn.execute(sql, (json_data["email"], json_data["name"], json_data["age"], json_data["password"]))
+            cursor = conn.execute(sql, (dto.email, dto.name, dto.age, dto.password))
             conn.commit()
        
             # Retrieve the newly inserted record
-            cursor = conn.execute("SELECT * FROM users WHERE email = ?", (json_data["email"],))
+            cursor = conn.execute("SELECT * FROM users WHERE email = ?", (dto.email,))
             new_user = cursor.fetchone()
         
         except sqlite3.IntegrityError as e:

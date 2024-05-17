@@ -1,5 +1,6 @@
 from flask import Blueprint, request
 from src.users.user_service import UserService
+from src.users.dto.input_dto import CreateUserDto
 
 controller = Blueprint("user_controller", __name__, static_folder="static", template_folder="template")
 
