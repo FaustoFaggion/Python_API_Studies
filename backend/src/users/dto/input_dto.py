@@ -12,3 +12,10 @@ class InputUserDto:
         self.name = json_data["name"]
         self.age = json_data["age"]
         self.password = json_data["password"]
+        
+class UserIdDto:
+    email:      str
+        
+    def __init__(self, json_data):
+       
+        self.email = json_data["email"]

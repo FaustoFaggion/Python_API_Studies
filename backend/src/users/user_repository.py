@@ -3,8 +3,8 @@ import json
 import sqlite3
 from dataBase.sqlite_db import SqliteDb
 from src.users.ports.user_repository_port import UserRepositoryPort
-from src.users.dto.input_dto import InputUserDto
-from src.users.domain.user_entity import user_factory
+from src.users.dto.input_dto import InputUserDto, UserIdDto
+from src.users.domain.user_entity import UserEntity, user_factory
 
 class UserRepository(UserRepositoryPort):
 
@@ -54,20 +54,20 @@ class UserRepository(UserRepositoryPort):
          
         return "User deleted"
 
-    def find_one(self, email):
+    def find_one(self, dto: UserIdDto):
         conn = SqliteDb.db_connection()
         cursor = conn.cursor()
         
         sql = """SELECT * FROM users WHERE email=?"""
-        cursor.execute(sql, (email,))
+        cursor.execute(sql, (dto.email,))
+        user = cursor.fetchone()
+        print(user)
+        response: UserEntity = user_factory(user)
+        print(response)
+
+        conn.close
         
-        rows = cursor.fetchall()
-        for r in rows:
-            user = r
-        if user is not None:
-            return jsonify(user), 200
-        else:
-            return "Something Wrong"    
+        return response
         
     def find_all(self):
         conn = SqliteDb.db_connection()

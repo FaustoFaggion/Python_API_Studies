@@ -15,10 +15,21 @@ INPUT_USER_SCHEMA = {
     "additionalProperties": False
 }
 
+USER_ID_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "email": {"type": "string"},
+    },
+    "required": ["email"],
+    "additionalProperties": False
+}
+
 def validate_dto(json_data, dto_type: str):
         if not json_data:
             return jsonify({ "error": "Invalid JSON data"})    
         if  dto_type == "InputUserDto":
-            response = validate(instance=json_data, schema=INPUT_USER_SCHEMA)
+            validate(instance=json_data, schema=INPUT_USER_SCHEMA)
+        if  dto_type == "UserIdDto":
+            validate(instance=json_data, schema=USER_ID_SCHEMA)
         
         return None

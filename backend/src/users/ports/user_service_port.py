@@ -16,11 +16,11 @@ class UserServicePort(ABC):
         ...
     
     @abstractmethod
-    def delete(email):
+    def delete():
         ...
     
     @abstractmethod
-    def find_one(email):
+    def find_one(json_data: str):
         ...
         
     @abstractmethod

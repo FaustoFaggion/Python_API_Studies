@@ -20,7 +20,7 @@ class UserController:
         self.controller.route('/create', methods=['POST'])(self.create)
         self.controller.route('/update', methods=['PUT'])(self.update)
         self.controller.route('/delete/<email>', methods=['DELETE'])(self.delete)
-        self.controller.route('/find_one/<email>', methods=['GET'])(self.find_one)
+        self.controller.route('/find_one/', methods=['GET'])(self.find_one)
         self.controller.route('/find_all', methods=['GET'])(self.find_all)
 
     def create(self):
@@ -64,8 +64,24 @@ class UserController:
     def delete(self, email):
         return self.user_service.delete(email)
 
-    def find_one(self, email):
-        return self.user_service.find_one(email)
+    def find_one(self):
+        print("USER CONTROLLER")
+        try:
+            json_data = request.get_json()
+            print(json_data)
+            user = self.user_service.find_one(json_data)
+            dto_dict = asdict(user)
+            response = json.dumps(dto_dict)
+            
+        except TypeError as e:
+            return make_response(jsonify({"error a": str(e)}), 415)  # Retorna 500 Internal Server Error para outros erros
+        except sqlite3.IntegrityError as e:
+            return make_response(jsonify({ "error b": str(e)}), 400)
+        except werkzeug.exceptions.BadRequest as e:
+            return make_response(jsonify({"error c": str(e)}), 400) # erro  request.get_json()
+        except Exception as e:
+            return make_response(jsonify({ "error d": str(e)}), 500)
+        return response
 
     def find_all(self):
         return self.user_service.find_all()

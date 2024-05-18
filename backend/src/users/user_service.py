@@ -3,7 +3,7 @@ from src.users.adapters.dto_validation import *
 from src.users.ports.user_repository_port import UserRepositoryPort
 from src.users.ports.user_service_port import UserServicePort
 from src.users.domain.user_entity import UserEntity
-from src.users.dto.input_dto import InputUserDto
+from src.users.dto.input_dto import InputUserDto, UserIdDto
 from src.users.dto.output_dto import *
 
 class UserService(UserServicePort):
@@ -16,7 +16,8 @@ class UserService(UserServicePort):
         validate_dto(json_data, "InputUserDto")     
         dto: InputUserDto = InputUserDto(json_data)
         user: UserEntity = self.user_repo.create(dto)
-
+        print("eNTITY: ")
+        print(user)
         response: OutputUserDto = output_dto_factory(user)
         return response
     
@@ -32,9 +33,16 @@ class UserService(UserServicePort):
     def delete(self, email):
         return self.user_repo.delete(email)
 
-    def find_one(self, email):
-        user = self.user_repo.findOne(email)
-        return user
+    def find_one(self, json_data):
+        print("USER SERVICE Find_one")
+        print(json_data)
+        validate_dto(json_data, "UserIdDto")     
+        dto: UserIdDto = UserIdDto(json_data)
+        print(dto)
+        user: UserEntity = self.user_repo.find_one(dto)
+        response: OutputUserDto = output_dto_factory(user)
+        
+        return response
     
     def find_all(self):
         user = self.user_repo.find_all()
