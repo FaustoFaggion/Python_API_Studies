@@ -2,14 +2,15 @@ from flask import request, jsonify
 import json
 import sqlite3
 from dataBase.sqlite_db import SqliteDb
+from src.users.ports.user_repository_port import UserRepositoryPort
 from src.users.dto.input_dto import CreateUserDto
 
-class UserRepository():
+class UserRepository(UserRepositoryPort):
 
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
-    def create(dto):
+    def create(self, dto: CreateUserDto):
         conn = SqliteDb.db_connection()
         
         try:
@@ -29,11 +30,11 @@ class UserRepository():
         
         return jsonify({"user": new_user})
         
-    def update():
+    def update(self):
         user = "User updated into repository"
         return user
     
-    def delete(email):
+    def delete(self, email):
         conn = SqliteDb.db_connection()
         
         sql = """DELETE FROM users WHERE email=?"""
@@ -42,7 +43,7 @@ class UserRepository():
          
         return "User deleted"
 
-    def findOne(email):
+    def find_one(self, email):
         conn = SqliteDb.db_connection()
         cursor = conn.cursor()
         
@@ -57,7 +58,7 @@ class UserRepository():
         else:
             return "Something Wrong"    
         
-    def findAll():
+    def find_all(self):
         conn = SqliteDb.db_connection()
         cursor = conn.execute("SELECT * FROM users")
         users = [
