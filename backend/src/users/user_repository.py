@@ -14,20 +14,14 @@ class UserRepository(UserRepositoryPort):
     def create(self, dto: InputUserDto):
         conn = SqliteDb.db_connection()
         
-        # try:
         sql = """INSERT INTO users (email, name, age, password) VALUES(?, ?, ?, ?)"""
         cursor = conn.execute(sql, (dto.email, dto.name, dto.age, dto.password))
         conn.commit()
     
-        # Retrieve the newly inserted record
         cursor = conn.execute("SELECT * FROM users WHERE email = ?", (dto.email,))
         new_user = cursor.fetchone()
         response = user_factory(new_user)
-        
-        # except sqlite3.IntegrityError as e:
-            # conn.rollback()
-            # return jsonify({ "error": str(e)}), 400
-        # finally:
+
         conn.close
         
         return response
