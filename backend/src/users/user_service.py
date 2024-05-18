@@ -1,5 +1,4 @@
 from flask import request, jsonify
-# from src.users.user_repository import UserRepository
 from src.users.dto.input_dto import CreateUserDto
 from src.users.ports.user_repository_port import UserRepositoryPort
 from src.users.adapters.dto_validation import *

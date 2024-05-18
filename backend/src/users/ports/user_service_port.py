@@ -4,13 +4,13 @@ from src.users.dto.input_dto import CreateUserDto
 from src.users.domain.user_entity import UserEntity
 
 
-class UserRepositoryPort(ABC):
+class UserServicePort(ABC):
     # @abstractmethod
     # def ___init___() -> None:
     #     ...
         
     @abstractmethod
-    def create(dto: CreateUserDto):
+    def create():
         ...
     
     @abstractmethod
@@ -28,4 +28,4 @@ class UserRepositoryPort(ABC):
     @abstractmethod
     def find_all():
         ...
-   
+ 
