@@ -42,21 +42,22 @@ class UserController:
         return response
 
     def update(self):
-        json_data = request.get_json()
+        print("USER CONTROLLER Update")
         try:
-            if not json_data:
-                raise TypeError("No JSON data provided")
-            
+            json_data = request.get_json()
             user = self.user_service.update(json_data)
             dto_dict = asdict(user)
             response = json.dumps(dto_dict)
             
         except TypeError as e:
-            return make_response(jsonify({"error c": str(e)}), 415)
+            return make_response(jsonify({"error a": str(e)}), 415)  # Retorna 500 Internal Server Error para outros erros
         except sqlite3.IntegrityError as e:
-            return make_response(jsonify({ "errord": str(e)}), 400)
+            return make_response(jsonify({ "error b": str(e)}), 400)
+        except werkzeug.exceptions.BadRequest as e:
+            return make_response(jsonify({"error c": str(e)}), 400) # erro  request.get_json()
         except Exception as e:
-            return make_response(jsonify({ "errore": str(e)}), 500)
+            return make_response(jsonify({ "error d": str(e)}), 500)
+
         return response
 
     def delete(self, email):

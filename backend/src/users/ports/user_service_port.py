@@ -6,9 +6,9 @@ from src.users.ports.user_repository_port import UserRepositoryPort
 
 
 class UserServicePort(ABC):
-    @abstractmethod
-    def ___init___(self, user_repo: UserRepositoryPort) -> None:
-        self.user_repo = user_repo
+    # @abstractmethod
+    # def ___init___(self, user_repo: UserRepositoryPort) -> None:
+    #     self.user_repo = user_repo
         
     @abstractmethod
     def create():
