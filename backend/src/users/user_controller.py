@@ -1,3 +1,5 @@
+from dataclasses import asdict
+import json
 from flask import Blueprint, request, jsonify
 from src.users.user_service import UserService
 from src.users.user_repository import UserRepository
@@ -19,7 +21,10 @@ class UserController:
         self.controller.route('/find_all', methods=['GET'])(self.find_all)
 
     def create(self):
-        return self.user_service.create()
+        user = self.user_service.create()
+        response = json.dumps(asdict(user))
+
+        return response
 
     def update(self):
         return self.user_service.update()

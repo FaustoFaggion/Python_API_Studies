@@ -4,6 +4,7 @@ import sqlite3
 from dataBase.sqlite_db import SqliteDb
 from src.users.ports.user_repository_port import UserRepositoryPort
 from src.users.dto.input_dto import CreateUserDto
+from src.users.domain.user_entity import user_factory
 
 class UserRepository(UserRepositoryPort):
 
@@ -21,6 +22,7 @@ class UserRepository(UserRepositoryPort):
             # Retrieve the newly inserted record
             cursor = conn.execute("SELECT * FROM users WHERE email = ?", (dto.email,))
             new_user = cursor.fetchone()
+            response = user_factory(new_user)
         
         except sqlite3.IntegrityError as e:
             conn.rollback()
@@ -28,7 +30,7 @@ class UserRepository(UserRepositoryPort):
         finally:
             conn.close
         
-        return jsonify({"user": new_user})
+        return response
         
     def update(self):
         user = "User updated into repository"

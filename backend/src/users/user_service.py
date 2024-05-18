@@ -1,7 +1,9 @@
 from flask import request, jsonify
-from src.users.dto.input_dto import CreateUserDto
-from src.users.ports.user_repository_port import UserRepositoryPort
 from src.users.adapters.dto_validation import *
+from src.users.ports.user_repository_port import UserRepositoryPort
+from src.users.domain.user_entity import UserEntity
+from src.users.dto.input_dto import CreateUserDto
+from src.users.dto.output_dto import *
 
 class UserService():
     
@@ -15,9 +17,10 @@ class UserService():
             return jsonify({"error": json_error})
         
         dto: CreateUserDto = CreateUserDto(json_data)
-        user = self.user_repo.create(dto)
+        user: UserEntity = self.user_repo.create(dto)
+        response: OutputUserDto = output_dto_factory(user)
         
-        return user
+        return response
     
     def update(self):
         user = self.user_repo.update()
