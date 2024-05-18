@@ -26,8 +26,11 @@ class UserController:
         try:
             if not json_data:
                 raise TypeError()
+            
             user = self.user_service.create(json_data)
-            response = user
+            dto_dict = asdict(user)
+            response = json.dumps(dto_dict)
+            
         except TypeError as e:
             return make_response(jsonify({"error c": str(e)}), 415)  # Retorna 500 Internal Server Error para outros erros
         except sqlite3.IntegrityError as e:

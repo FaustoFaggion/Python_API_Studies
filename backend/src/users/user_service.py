@@ -17,9 +17,14 @@ class UserService():
             
         dto: CreateUserDto = CreateUserDto(json_data)
         user: UserEntity = self.user_repo.create(dto)
+        print(user)
+        response1: OutputUserDto = output_dto_factory(user)
+        print(response1)
+        response3 = jsonify({"res": response1})
+        print(response3)
         response = jsonify({"user": user})
-        
-        return response
+        print( response)
+        return response1
     
     def update(self):
         user = self.user_repo.update()
