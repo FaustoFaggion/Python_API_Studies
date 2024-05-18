@@ -1,6 +1,6 @@
 import json
 
-class CreateUserDto:
+class InputUserDto:
     email:      str
     name:       str
     age:        int

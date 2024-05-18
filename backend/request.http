@@ -1,12 +1,13 @@
 
+
 POST http://localhost:5000/users/create HTTP/1.1
 Content-Type: application/json
 
 {
-    "email":"nmn@email.com",
+    "email":"naq@email.com",
     "name":"nmddd",
-    "age":40,
-    "password":"123"
-    # "outra": "erro"
+    "age":"40",
+    "password":"123",
+    "outra": "erro"
 }
  

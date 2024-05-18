@@ -3,7 +3,7 @@ import json
 import sqlite3
 from dataBase.sqlite_db import SqliteDb
 from src.users.ports.user_repository_port import UserRepositoryPort
-from src.users.dto.input_dto import CreateUserDto
+from src.users.dto.input_dto import InputUserDto
 from src.users.domain.user_entity import user_factory
 
 class UserRepository(UserRepositoryPort):
@@ -11,7 +11,7 @@ class UserRepository(UserRepositoryPort):
     def __init__(self) -> None:
         pass
 
-    def create(self, dto: CreateUserDto):
+    def create(self, dto: InputUserDto):
         conn = SqliteDb.db_connection()
         
         # try:
