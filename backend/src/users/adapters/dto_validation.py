@@ -1,6 +1,7 @@
 from flask import jsonify
 import jsonschema
 from jsonschema import validate
+from src.users.dto.input_dto import CreateUserDto
 
 CREATE_USER_SCHEMA = {
     "type": "object",
@@ -14,8 +15,9 @@ CREATE_USER_SCHEMA = {
     "additionalProperties": False
 }
 
-def validate_dto(json_data, validation_schema):
+def validate_dto(json_data, dto_type: str):
         if not json_data:
             return jsonify({ "error": "Invalid JSON data"})    
-        validate(instance=json_data, schema=validation_schema)
+        if  dto_type == "CreateUserDto":
+            validate(instance=json_data, schema=CREATE_USER_SCHEMA)
         return None

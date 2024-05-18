@@ -11,20 +11,15 @@ class UserService():
         self.user_repo = user_repo
         
     def create(self, json_data):
-        json_error = validate_dto(json_data, CREATE_USER_SCHEMA)        
+        json_error = validate_dto(json_data, "CreateUserDto")        
         if json_error:
             return jsonify({"error": json_error})
             
         dto: CreateUserDto = CreateUserDto(json_data)
         user: UserEntity = self.user_repo.create(dto)
-        print(user)
-        response1: OutputUserDto = output_dto_factory(user)
-        print(response1)
-        response3 = jsonify({"res": response1})
-        print(response3)
-        response = jsonify({"user": user})
-        print( response)
-        return response1
+
+        response: OutputUserDto = output_dto_factory(user)
+        return response
     
     def update(self):
         user = self.user_repo.update()

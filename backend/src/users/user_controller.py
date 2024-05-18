@@ -25,7 +25,7 @@ class UserController:
         json_data = request.get_json()
         try:
             if not json_data:
-                raise TypeError()
+                raise TypeError("No JSON data provided")
             
             user = self.user_service.create(json_data)
             dto_dict = asdict(user)
@@ -40,7 +40,22 @@ class UserController:
         return response
 
     def update(self):
-        return self.user_service.update()
+        json_data = request.get_json()
+        try:
+            if not json_data:
+                raise TypeError("No JSON data provided")
+            
+            user = self.user_service.update(json_data)
+            dto_dict = asdict(user)
+            response = json.dumps(dto_dict)
+            
+        except TypeError as e:
+            return make_response(jsonify({"error c": str(e)}), 415)
+        except sqlite3.IntegrityError as e:
+            return make_response(jsonify({ "errord": str(e)}), 400)
+        except Exception as e:
+            return make_response(jsonify({ "errore": str(e)}), 500)
+        return response
 
     def delete(self, email):
         return self.user_service.delete(email)
