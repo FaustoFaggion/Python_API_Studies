@@ -17,7 +17,7 @@ class UserService():
             
         dto: CreateUserDto = CreateUserDto(json_data)
         user: UserEntity = self.user_repo.create(dto)
-        response: OutputUserDto = output_dto_factory(user)
+        response = jsonify({"user": user})
         
         return response
     
