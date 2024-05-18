@@ -45,14 +45,15 @@ class UserRepository(UserRepositoryPort):
         
         return response
     
-    def delete(self, email):
+    def delete(self, dto):
         conn = SqliteDb.db_connection()
         
         sql = """DELETE FROM users WHERE email=?"""
-        conn.execute(sql, (email,))
+        cursor = conn.execute(sql, (dto.email,))
         conn.commit()
          
-        return "User deleted"
+        if cursor.rowcount == 0:
+            raise sqlite3.IntegrityError("User not found")
 
     def find_one(self, dto: UserIdDto):
         conn = SqliteDb.db_connection()

@@ -62,8 +62,23 @@ class UserController:
         return response
 
     def delete(self, email):
-        return self.user_service.delete(email)
+        print("USER CONTROLLER delete")
+        try:
+            json_data = {'email': email}
+            print(json_data)
+            self.user_service.delete(json_data)
+            response = "User deleted", 204        
+        except TypeError as e:
+            return make_response(jsonify({"error a": str(e)}), 415)  # Retorna 500 Internal Server Error para outros erros
+        except sqlite3.IntegrityError as e:
+            return make_response(jsonify({ "error b": str(e)}), 400)
+        except werkzeug.exceptions.BadRequest as e:
+            return make_response(jsonify({"error c": str(e)}), 400) # erro  request.get_json()
+        except Exception as e:
+            return make_response(jsonify({ "error d": str(e)}), 500)
 
+        return response
+    
     def find_one(self, email):
         print("USER CONTROLLER find_one")
         try:

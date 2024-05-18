@@ -16,7 +16,7 @@ class UserServicePort(ABC):
         ...
     
     @abstractmethod
-    def delete():
+    def delete(json_data: str):
         ...
     
     @abstractmethod

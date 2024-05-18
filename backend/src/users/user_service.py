@@ -30,8 +30,13 @@ class UserService(UserServicePort):
         response: OutputUserDto = output_dto_factory(user)
         return response
     
-    def delete(self, email):
-        return self.user_repo.delete(email)
+    def delete(self, json_data):
+        print("USER SERVICE Find_one")
+        print(json_data)
+        validate_dto(json_data, "UserIdDto")     
+        dto: UserIdDto = UserIdDto(json_data)
+        print(dto)
+        self.user_repo.delete(dto)
 
     def find_one(self, json_data):
         print("USER SERVICE Find_one")
