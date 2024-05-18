@@ -5,9 +5,10 @@ from src.users.domain.user_entity import UserEntity
 
 
 class UserRepositoryPort(ABC):
+    
     # @abstractmethod
     # def ___init___() -> None:
-    #     ...
+    #     pass
         
     @abstractmethod
     def create(dto: InputUserDto):

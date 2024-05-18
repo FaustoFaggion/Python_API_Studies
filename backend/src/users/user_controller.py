@@ -5,12 +5,12 @@ from flask import Blueprint, request, jsonify, make_response
 from src.users.user_service import UserService
 from src.users.user_repository import UserRepository
 from src.users.ports.user_service_port import UserServicePort
+from src.users.ports.user_repository_port import UserRepositoryPort
 
 class UserController:
 
-    def __init__(self):
-        self.user_repository = UserRepository()
-        self.user_service = UserService(self.user_repository)
+    def __init__(self, user_service: UserServicePort):
+        self.user_service = user_service
         self.controller = Blueprint("user_controller", __name__, static_folder="static", template_folder="template")
         self.register_routes()
 
@@ -67,7 +67,9 @@ class UserController:
         return self.user_service.find_all()
 
 # To create an instance of UserController and access its blueprint:
-user_controller = UserController()
+user_repo: UserRepositoryPort = UserRepository()
+user_service: UserServicePort = UserService(user_repo)
+user_controller = UserController(user_service)
 controller_blueprint = user_controller.controller
 
 
