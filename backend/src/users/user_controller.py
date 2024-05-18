@@ -20,7 +20,7 @@ class UserController:
         self.controller.route('/create', methods=['POST'])(self.create)
         self.controller.route('/update', methods=['PUT'])(self.update)
         self.controller.route('/delete/<email>', methods=['DELETE'])(self.delete)
-        self.controller.route('/find_one/', methods=['GET'])(self.find_one)
+        self.controller.route('/find_one/<email>', methods=['GET'])(self.find_one)
         self.controller.route('/find_all', methods=['GET'])(self.find_all)
 
     def create(self):
@@ -64,10 +64,10 @@ class UserController:
     def delete(self, email):
         return self.user_service.delete(email)
 
-    def find_one(self):
-        print("USER CONTROLLER")
+    def find_one(self, email):
+        print("USER CONTROLLER find_one")
         try:
-            json_data = request.get_json()
+            json_data = {'email': email}
             print(json_data)
             user = self.user_service.find_one(json_data)
             dto_dict = asdict(user)
