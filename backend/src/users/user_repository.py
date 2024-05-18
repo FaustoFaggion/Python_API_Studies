@@ -12,6 +12,7 @@ class UserRepository(UserRepositoryPort):
         pass
 
     def create(self, dto: InputUserDto):
+        print("USER REPOSITORY")
         conn = SqliteDb.db_connection()
         
         sql = """INSERT INTO users (email, name, age, password) VALUES(?, ?, ?, ?)"""

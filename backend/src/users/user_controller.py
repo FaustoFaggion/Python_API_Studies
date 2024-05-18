@@ -1,6 +1,8 @@
 from dataclasses import asdict
 import json
 import sqlite3
+
+import werkzeug
 from flask import Blueprint, request, jsonify, make_response
 from src.users.user_service import UserService
 from src.users.user_repository import UserRepository
@@ -22,21 +24,21 @@ class UserController:
         self.controller.route('/find_all', methods=['GET'])(self.find_all)
 
     def create(self):
-        json_data = request.get_json()
+        print("USER CONTROLLER")
         try:
-            if not json_data:
-                raise TypeError("No JSON data provided")
-            
+            json_data = request.get_json()
             user = self.user_service.create(json_data)
             dto_dict = asdict(user)
             response = json.dumps(dto_dict)
             
         except TypeError as e:
-            return make_response(jsonify({"error c": str(e)}), 415)  # Retorna 500 Internal Server Error para outros erros
+            return make_response(jsonify({"error a": str(e)}), 415)  # Retorna 500 Internal Server Error para outros erros
         except sqlite3.IntegrityError as e:
-            return make_response(jsonify({ "errord": str(e)}), 400)
+            return make_response(jsonify({ "error b": str(e)}), 400)
+        except werkzeug.exceptions.BadRequest as e:
+            return make_response(jsonify({"error c": str(e)}), 400) # erro  request.get_json()
         except Exception as e:
-            return make_response(jsonify({ "errore": str(e)}), 500)
+            return make_response(jsonify({ "error d": str(e)}), 500)
         return response
 
     def update(self):

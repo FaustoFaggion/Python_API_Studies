@@ -11,9 +11,8 @@ class UserService():
         self.user_repo = user_repo
         
     def create(self, json_data):
-        
-        validate_dto(json_data, "InputUserDto")
-            
+        print("USER SERVICE")
+        validate_dto(json_data, "InputUserDto")     
         dto: InputUserDto = InputUserDto(json_data)
         user: UserEntity = self.user_repo.create(dto)
 
