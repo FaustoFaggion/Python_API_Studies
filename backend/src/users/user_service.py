@@ -10,12 +10,11 @@ class UserService():
     def __init__(self, user_repo: UserRepositoryPort):
         self.user_repo = user_repo
         
-    def create(self):
-        json_data = request.get_json()
+    def create(self, json_data):
         json_error = validate_dto(json_data, CREATE_USER_SCHEMA)        
         if json_error:
             return jsonify({"error": json_error})
-        
+            
         dto: CreateUserDto = CreateUserDto(json_data)
         user: UserEntity = self.user_repo.create(dto)
         response: OutputUserDto = output_dto_factory(user)

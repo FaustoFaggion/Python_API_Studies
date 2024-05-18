@@ -1,6 +1,7 @@
 from dataclasses import asdict
 import json
-from flask import Blueprint, request, jsonify
+import sqlite3
+from flask import Blueprint, request, jsonify, make_response
 from src.users.user_service import UserService
 from src.users.user_repository import UserRepository
 from src.users.ports.user_service_port import UserServicePort
@@ -21,9 +22,18 @@ class UserController:
         self.controller.route('/find_all', methods=['GET'])(self.find_all)
 
     def create(self):
-        user = self.user_service.create()
-        response = json.dumps(asdict(user))
-
+        json_data = request.get_json()
+        try:
+            if not json_data:
+                raise TypeError()
+            user = self.user_service.create(json_data)
+            response = json.dumps(asdict(user))
+        except TypeError as e:
+            return make_response(jsonify({"error c": str(e)}), 415)  # Retorna 500 Internal Server Error para outros erros
+        except sqlite3.IntegrityError as e:
+            return make_response(jsonify({ "errord": str(e)}), 400)
+        except Exception as e:
+            return make_response(jsonify({ "errore": str(e)}), 500)
         return response
 
     def update(self):
