@@ -15,7 +15,7 @@ class UserRepositoryPort(ABC):
         ...
     
     @abstractmethod
-    def update():
+    def update(dto: InputUserDto):
         ...
     
     @abstractmethod

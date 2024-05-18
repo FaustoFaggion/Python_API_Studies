@@ -27,9 +27,23 @@ class UserRepository(UserRepositoryPort):
         
         return response
         
-    def update(self):
-        user = "User updated into repository"
-        return user
+    def update(self, dto: InputUserDto):
+        print("USER REPOSITORY Update")
+        print(dto.email)
+        print(dto.age)
+        conn = SqliteDb.db_connection()
+        
+        sql = """UPDATE users SET name=?, age=?, password=? Where email=?"""
+        cursor = conn.execute(sql, (dto.name, dto.age, dto.password, dto.email))
+        conn.commit()
+    
+        cursor = conn.execute("SELECT * FROM users WHERE email = ?", (dto.email,))
+        user = cursor.fetchone()
+        response = user_factory(user)
+
+        conn.close
+        
+        return response
     
     def delete(self, email):
         conn = SqliteDb.db_connection()

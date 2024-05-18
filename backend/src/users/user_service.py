@@ -11,7 +11,7 @@ class UserService(UserServicePort):
     def __init__(self, user_repo: UserRepositoryPort):
         self.user_repo = user_repo
         
-    def create(self, json_data):
+    def create(self, json_data: str):
         print("USER SERVICE")
         validate_dto(json_data, "InputUserDto")     
         dto: InputUserDto = InputUserDto(json_data)
@@ -20,7 +20,7 @@ class UserService(UserServicePort):
         response: OutputUserDto = output_dto_factory(user)
         return response
     
-    def update(self, json_data):
+    def update(self, json_data: str):
         print("USER SERVICE Update")
         validate_dto(json_data, "InputUserDto")     
         dto: InputUserDto = InputUserDto(json_data)
@@ -37,5 +37,5 @@ class UserService(UserServicePort):
         return user
     
     def find_all(self):
-        user = self.user_repo.findAll()
+        user = self.user_repo.find_all()
         return user

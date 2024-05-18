@@ -45,6 +45,7 @@ class UserController:
         print("USER CONTROLLER Update")
         try:
             json_data = request.get_json()
+            print(json_data)
             user = self.user_service.update(json_data)
             dto_dict = asdict(user)
             response = json.dumps(dto_dict)
