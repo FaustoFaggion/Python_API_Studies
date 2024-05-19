@@ -1,19 +1,20 @@
 from flask import request, jsonify
 import json
 import sqlite3
-from dataBase.sqlite_db import SqliteDb
 from src.users.ports.user_repository_port import UserRepositoryPort
 from src.users.dto.input_dto import InputUserDto, UserIdDto
 from src.users.domain.user_entity import UserEntity, user_factory
+from dataBase.adapters.sqlite_db import SqliteDb
+from dataBase.ports.database_port import Database_Port
 
 class UserRepository(UserRepositoryPort):
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, database: Database_Port) -> None:
+        self.database = database
 
     def create(self, dto: InputUserDto):
         print("USER REPOSITORY")
-        conn = SqliteDb.db_connection()
+        conn = self.database.db_connection()
         
         sql = """INSERT INTO users (email, name, age, password) VALUES(?, ?, ?, ?)"""
         cursor = conn.execute(sql, (dto.email, dto.name, dto.age, dto.password))
@@ -31,7 +32,7 @@ class UserRepository(UserRepositoryPort):
         print("USER REPOSITORY Update")
         print(dto.email)
         print(dto.age)
-        conn = SqliteDb.db_connection()
+        conn = self.database.db_connection()
         
         sql = """UPDATE users SET name=?, age=?, password=? Where email=?"""
         cursor = conn.execute(sql, (dto.name, dto.age, dto.password, dto.email))
@@ -46,7 +47,7 @@ class UserRepository(UserRepositoryPort):
         return response
     
     def delete(self, dto):
-        conn = SqliteDb.db_connection()
+        conn = self.database.db_connection()
         
         sql = """DELETE FROM users WHERE email=?"""
         cursor = conn.execute(sql, (dto.email,))
@@ -56,7 +57,7 @@ class UserRepository(UserRepositoryPort):
             raise sqlite3.IntegrityError("User not found")
 
     def find_one(self, dto: UserIdDto):
-        conn = SqliteDb.db_connection()
+        conn = self.database.db_connection()
         cursor = conn.cursor()
         
         sql = """SELECT * FROM users WHERE email=?"""
@@ -71,7 +72,7 @@ class UserRepository(UserRepositoryPort):
         return response
         
     def find_all(self):
-        conn = SqliteDb.db_connection()
+        conn = self.database.db_connection()
         cursor = conn.execute("SELECT * FROM users")
         users = [
             dict(email=row[0], name=row[1], age=row[2], password=row[3])

@@ -1,13 +1,15 @@
 from dataclasses import asdict
 import json
 import sqlite3
-
 import werkzeug
 from flask import Blueprint, request, jsonify, make_response
+
 from src.users.user_service import UserService
 from src.users.user_repository import UserRepository
 from src.users.ports.user_service_port import UserServicePort
 from src.users.ports.user_repository_port import UserRepositoryPort
+from dataBase.ports.database_port import Database_Port
+from dataBase.adapters.sqlite_db import SqliteDb
 
 class UserController:
 
@@ -100,13 +102,6 @@ class UserController:
 
     def find_all(self):
         return self.user_service.find_all()
-
-# To create an instance of UserController and access its blueprint:
-user_repo: UserRepositoryPort = UserRepository()
-user_service: UserServicePort = UserService(user_repo)
-user_controller = UserController(user_service)
-controller_blueprint = user_controller.controller
-
 
 
 

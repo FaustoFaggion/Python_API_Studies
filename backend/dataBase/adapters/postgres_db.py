@@ -1,17 +1,27 @@
-import sqlite3
+import os
+import pyscopg2
+from dotenv import load_dotenv
+from flask import Flask
+from dataBase.ports.database_port import Database_Port
 
-class SqliteDb:
+load_dotenv()
+
+class PostgresDb(Database_Port):
     
-    def db_connection():
+    def __init__(self):
+        pass
+    
+    def db_connection(self):
         conn = None
-        try:
-            conn = sqlite3.connect("dataBase.sqlite")
-        except sqlite3.error as e:
-            print(e)
+        # try:
+        url = os.getenv("DATA_URL")
+        conn = pyscopg2.connect(url)
+        # except pyscopg2 as e:
+        #     print(e)
         return conn
     
-    def createTables():
-        conn = SqliteDb.db_connection()
+    def createTables(self):
+        conn = self.db_connection()
         cursor = conn.cursor()
         
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='users'")
