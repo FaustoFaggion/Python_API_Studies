@@ -3,8 +3,8 @@ from src.users.adapters.dto_validation import *
 from src.users.ports.user_repository_port import UserRepositoryPort
 from src.users.ports.user_service_port import UserServicePort
 from src.users.domain.user_entity import UserEntity
-from src.users.dto.input_dto import InputUserDto, UserIdDto
-from src.users.dto.output_dto import *
+from src.users.domain.dto.input_dto import InputUserDto, UserIdDto
+from src.users.domain.dto.output_dto import *
 
 class UserService(UserServicePort):
     

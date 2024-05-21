@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Any
-from src.users.dto.input_dto import InputUserDto, UserIdDto
+from src.users.domain.dto.input_dto import InputUserDto, UserIdDto
 from src.users.domain.user_entity import UserEntity
 
 

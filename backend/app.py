@@ -1,21 +1,22 @@
 from flask import Flask, request, jsonify
 from src.users.ports.user_service_port import UserServicePort
-from src.users.user_service import UserService
+from src.users.adapters.output.user_repository_postgres import UserRepositoryPostgres
+from src.users.adapters.output.user_repository_sqlite import UserRepositorySqlite
+from src.users.useCases.user_service import UserService
 from src.users.ports.user_repository_port import UserRepositoryPort
-from src.users.user_repository import UserRepository
 from dataBase.ports.database_port import Database_Port
 from dataBase.adapters.sqlite_db import SqliteDb
 from dataBase.adapters.postgres_db import PostgresDb
-from src.users.user_controller import UserController
+from src.users.adapters.input.user_controller import UserController
 
 # create the application object
 app = Flask(__name__)
 
-database = PostgresDb()
+database = SqliteDb()
 database.createTables()
 
 # To create an instance of UserController and access its blueprint:
-user_repo: UserRepositoryPort = UserRepository(database)
+user_repo: UserRepositoryPort = UserRepositorySqlite(database)
 user_service: UserServicePort = UserService(user_repo)
 user_controller = UserController(user_service)
 

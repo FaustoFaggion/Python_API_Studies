@@ -1,7 +1,7 @@
 from flask import jsonify
 import jsonschema
 from jsonschema import validate
-from src.users.dto.input_dto import InputUserDto
+from src.users.domain.dto.input_dto import InputUserDto
 
 INPUT_USER_SCHEMA = {
     "type": "object",

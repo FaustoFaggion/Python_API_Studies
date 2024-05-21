@@ -2,12 +2,12 @@ from flask import request, jsonify
 import json
 import sqlite3
 from src.users.ports.user_repository_port import UserRepositoryPort
-from src.users.dto.input_dto import InputUserDto, UserIdDto
+from src.users.domain.dto.input_dto import InputUserDto, UserIdDto
 from src.users.domain.user_entity import UserEntity, user_factory
 from dataBase.adapters.sqlite_db import SqliteDb
 from dataBase.ports.database_port import Database_Port
 
-class UserRepository(UserRepositoryPort):
+class UserRepositorySqlite(UserRepositoryPort):
 
     def __init__(self, database: Database_Port) -> None:
         self.database = database
@@ -18,11 +18,11 @@ class UserRepository(UserRepositoryPort):
         cursor = conn.cursor()
         
         # sql = """INSERT INTO users (email, name, age, password) VALUES(?, ?, ?, ?)"""
-        sql = """INSERT INTO users (email, name, age, password) VALUES(%s, %s, %s, %s)"""
+        sql = """INSERT INTO users (email, name, age, password) VALUES(?, ?, ?, ?)"""
         cursor.execute(sql, (dto.email, dto.name, dto.age, dto.password))
         conn.commit()
     
-        cursor.execute("SELECT * FROM users WHERE email = %s", (dto.email,))
+        cursor.execute("SELECT * FROM users WHERE email = ?", (dto.email,))
         new_user = cursor.fetchone()
         response = user_factory(new_user)
 
@@ -37,11 +37,11 @@ class UserRepository(UserRepositoryPort):
         conn = self.database.db_connection()
         cursor = conn.cursor()
          
-        sql = """UPDATE users SET name=%s, age=%s, password=%s Where email=%s"""
+        sql = """UPDATE users SET name=?, age=?, password=? Where email=?"""
         cursor.execute(sql, (dto.name, dto.age, dto.password, dto.email))
         conn.commit()
     
-        cursor.execute("SELECT * FROM users WHERE email = %s", (dto.email,))
+        cursor.execute("SELECT * FROM users WHERE email = ?", (dto.email,))
         user = cursor.fetchone()
         
         if user is None:
@@ -58,7 +58,7 @@ class UserRepository(UserRepositoryPort):
         conn = self.database.db_connection()
         cursor = conn.cursor()
          
-        sql = """DELETE FROM users WHERE email=%s"""
+        sql = """DELETE FROM users WHERE email=?"""
         cursor.execute(sql, (dto.email,))
         conn.commit()
          
@@ -69,7 +69,7 @@ class UserRepository(UserRepositoryPort):
         conn = self.database.db_connection()
         cursor = conn.cursor()
         
-        sql = """SELECT * FROM users WHERE email=%s"""
+        sql = """SELECT * FROM users WHERE email=?"""
         cursor.execute(sql, (dto.email,))
         user = cursor.fetchone()
         print(user)

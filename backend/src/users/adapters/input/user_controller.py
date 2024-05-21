@@ -3,9 +3,7 @@ import json
 import sqlite3
 import werkzeug
 from flask import Blueprint, request, jsonify, make_response
-
-from src.users.user_service import UserService
-from src.users.user_repository import UserRepository
+from src.users.useCases.user_service import UserService
 from src.users.ports.user_service_port import UserServicePort
 from src.users.ports.user_repository_port import UserRepositoryPort
 from dataBase.ports.database_port import Database_Port
