@@ -56,9 +56,10 @@ class UserRepository(UserRepositoryPort):
     
     def delete(self, dto):
         conn = self.database.db_connection()
-        
-        sql = """DELETE FROM users WHERE email=?"""
-        cursor = conn.execute(sql, (dto.email,))
+        cursor = conn.cursor()
+         
+        sql = """DELETE FROM users WHERE email=%s"""
+        cursor.execute(sql, (dto.email,))
         conn.commit()
          
         if cursor.rowcount == 0:
@@ -68,7 +69,7 @@ class UserRepository(UserRepositoryPort):
         conn = self.database.db_connection()
         cursor = conn.cursor()
         
-        sql = """SELECT * FROM users WHERE email=?"""
+        sql = """SELECT * FROM users WHERE email=%s"""
         cursor.execute(sql, (dto.email,))
         user = cursor.fetchone()
         print(user)
@@ -83,7 +84,7 @@ class UserRepository(UserRepositoryPort):
         conn = self.database.db_connection()
         cursor = conn.cursor()
         
-        cursor = conn.execute("SELECT * FROM users")
+        cursor.execute("SELECT * FROM users")
         users = [
             dict(email=row[0], name=row[1], age=row[2], password=row[3])
             for row in cursor.fetchall()
