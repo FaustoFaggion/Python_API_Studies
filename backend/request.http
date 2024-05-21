@@ -4,7 +4,7 @@ POST http://localhost:5000/users/create HTTP/1.1
 Content-Type: application/json
 
 {
-    "email":"todos@email.com",
+    "email":"vc@email.com",
     "name":"nmddd",
     "age":40,
     "password":"123"
@@ -26,12 +26,12 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:5000/users/delete/czaax@email.com HTTP/1.1
+DELETE http://localhost:5000/users/delete/vc@email.com HTTP/1.1
 
 ###
 
- GET http://localhost:5000/users/find_all HTTP/1.1
+GET http://localhost:5000/users/find_all HTTP/1.1
 
 ###
 
-GET http://localhost:5000/users/find_one/eu@email.com HTTP/1.1
+GET http://localhost:5000/users/find_one/vc@email.com HTTP/1.1

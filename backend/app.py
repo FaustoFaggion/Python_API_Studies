@@ -12,11 +12,11 @@ from src.users.adapters.input.user_controller import UserController
 # create the application object
 app = Flask(__name__)
 
-database = PostgresDb()
+database = SqliteDb()
 database.createTables()
 
 # To create an instance of UserController and access its blueprint:
-user_repo: UserRepositoryPort = UserRepositoryPostgres(database)
+user_repo: UserRepositoryPort = UserRepositorySqlite(database)
 user_service: UserServicePort = UserService(user_repo)
 user_controller = UserController(user_service)
 
