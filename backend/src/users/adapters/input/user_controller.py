@@ -4,8 +4,8 @@ import sqlite3
 import werkzeug
 from flask import Blueprint, request, jsonify, make_response
 from src.users.useCases.user_service import UserService
-from src.users.ports.user_service_port import UserServicePort
-from src.users.ports.user_repository_port import UserRepositoryPort
+from src.users.ports.input.user_service_port import UserServicePort
+from src.users.ports.output.user_repository_port import UserRepositoryPort
 from dataBase.ports.database_port import Database_Port
 from dataBase.adapters.sqlite_db import SqliteDb
 

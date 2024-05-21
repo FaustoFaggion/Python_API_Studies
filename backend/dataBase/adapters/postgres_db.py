@@ -59,8 +59,3 @@ class PostgresDb(Database_Port):
             if conn:
                 cursor.close()
                 conn.close()
-    # def execute_query(self, sql: str, params: tuple = ()):
-    #     cursor = self.conn.cursor()
-    #     cursor.execute(sql, params)
-    #     self.conn.commit()
-    #     return cursor

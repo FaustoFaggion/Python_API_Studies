@@ -1,7 +1,7 @@
 from flask import request, jsonify
 import json
 import sqlite3
-from src.users.ports.user_repository_port import UserRepositoryPort
+from src.users.ports.output.user_repository_port import UserRepositoryPort
 from src.users.domain.dto.input_dto import InputUserDto, UserIdDto
 from src.users.domain.user_entity import UserEntity, user_factory
 from dataBase.adapters.sqlite_db import SqliteDb
