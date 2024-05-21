@@ -22,7 +22,7 @@ class SqliteDb(Database_Port):
         table_exists = cursor.fetchone()
 
         if not table_exists:
-            sql_query = """ CREATE TABLE users (
+            sql_query = """CREATE TABLE IF NT EXISTS users (
                 email       text        PRIMARY KEY,
                 name        text        NOT NULL,
                 age         number      NOT NULL,

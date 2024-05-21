@@ -15,12 +15,14 @@ class UserRepository(UserRepositoryPort):
     def create(self, dto: InputUserDto):
         print("USER REPOSITORY")
         conn = self.database.db_connection()
+        cursor = conn.cursor()
         
-        sql = """INSERT INTO users (email, name, age, password) VALUES(?, ?, ?, ?)"""
-        cursor = conn.execute(sql, (dto.email, dto.name, dto.age, dto.password))
+        # sql = """INSERT INTO users (email, name, age, password) VALUES(?, ?, ?, ?)"""
+        sql = """INSERT INTO users (email, name, age, password) VALUES(%s, %s, %s, %s)"""
+        cursor.execute(sql, (dto.email, dto.name, dto.age, dto.password))
         conn.commit()
     
-        cursor = conn.execute("SELECT * FROM users WHERE email = ?", (dto.email,))
+        cursor.execute("SELECT * FROM users WHERE email = %s", (dto.email,))
         new_user = cursor.fetchone()
         response = user_factory(new_user)
 
@@ -33,13 +35,19 @@ class UserRepository(UserRepositoryPort):
         print(dto.email)
         print(dto.age)
         conn = self.database.db_connection()
-        
-        sql = """UPDATE users SET name=?, age=?, password=? Where email=?"""
-        cursor = conn.execute(sql, (dto.name, dto.age, dto.password, dto.email))
+        cursor = conn.cursor()
+         
+        sql = """UPDATE users SET name=%s, age=%s, password=%s Where email=%s"""
+        cursor.execute(sql, (dto.name, dto.age, dto.password, dto.email))
         conn.commit()
     
-        cursor = conn.execute("SELECT * FROM users WHERE email = ?", (dto.email,))
+        cursor.execute("SELECT * FROM users WHERE email = %s", (dto.email,))
         user = cursor.fetchone()
+        
+        if user is None:
+            conn.close()
+            return None  
+    
         response = user_factory(user)
 
         conn.close
@@ -73,6 +81,8 @@ class UserRepository(UserRepositoryPort):
         
     def find_all(self):
         conn = self.database.db_connection()
+        cursor = conn.cursor()
+        
         cursor = conn.execute("SELECT * FROM users")
         users = [
             dict(email=row[0], name=row[1], age=row[2], password=row[3])

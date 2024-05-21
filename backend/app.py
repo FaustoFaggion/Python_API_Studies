@@ -5,16 +5,16 @@ from src.users.ports.user_repository_port import UserRepositoryPort
 from src.users.user_repository import UserRepository
 from dataBase.ports.database_port import Database_Port
 from dataBase.adapters.sqlite_db import SqliteDb
+from dataBase.adapters.postgres_db import PostgresDb
 from src.users.user_controller import UserController
 
 # create the application object
 app = Flask(__name__)
 
-database = SqliteDb()
+database = PostgresDb()
 database.createTables()
 
 # To create an instance of UserController and access its blueprint:
-database: Database_Port = SqliteDb()
 user_repo: UserRepositoryPort = UserRepository(database)
 user_service: UserServicePort = UserService(user_repo)
 user_controller = UserController(user_service)

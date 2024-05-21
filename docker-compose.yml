@@ -1,4 +1,5 @@
 version: '3'
+
 services:
   postgres:
     image: postgres
@@ -11,6 +12,12 @@ services:
       - '5432:5432'
     volumes:
       - pg-data:/var/lib/postgresql/data
+    healthcheck:      
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB} -t 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
 
 volumes:
   pg-data:
