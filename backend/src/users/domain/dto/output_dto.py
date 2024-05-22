@@ -8,9 +8,7 @@ class OutputUserDto:
     name:       str
     age:        int
     
-def output_dto_factory(entity: UserEntity) -> OutputUserDto:
-    return OutputUserDto(
-        email = entity.email,
-        name = entity.name,
-        age = entity.age
-    )
+    def __init__(self, entity: UserEntity):
+        self.email = entity.email
+        self.name = entity.name
+        self.age = entity.age

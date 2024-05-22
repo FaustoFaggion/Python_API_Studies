@@ -17,7 +17,7 @@ class UserService(UserServicePort):
         print("USER SERVICE")
         self.dto_validation.validate_dto(dto)     
         user: UserEntity = self.user_repo.create(dto)
-        response: OutputUserDto = output_dto_factory(user)
+        response: OutputUserDto = OutputUserDto(user)
         return response
     
     def update(self, dto: InputUserDto):
@@ -25,7 +25,7 @@ class UserService(UserServicePort):
         self.dto_validation.validate_dto(dto)     
         user: UserEntity = self.user_repo.update(dto)
 
-        response: OutputUserDto = output_dto_factory(user)
+        response: OutputUserDto = OutputUserDto(user)
         return response
     
     def delete(self, dto: UserIdDto):
@@ -37,7 +37,7 @@ class UserService(UserServicePort):
         print("USER SERVICE Find_one")
         self.dto_validation.validate_dto(dto)     
         user: UserEntity = self.user_repo.find_one(dto)
-        response: OutputUserDto = output_dto_factory(user)
+        response: OutputUserDto = OutputUserDto(user)
         
         return response
     
@@ -46,7 +46,7 @@ class UserService(UserServicePort):
         
         response: List[OutputUserDto] = []
         for user in users:
-            response.append(output_dto_factory(user))
+            response.append(OutputUserDto(user))
         
         return response
     

@@ -2,7 +2,7 @@ from typing import List
 from flask import request, jsonify
 import json
 import sqlite3
-from src.users.domain.dto.output_dto import OutputUserDto, output_dto_factory
+from src.users.domain.dto.output_dto import OutputUserDto
 from src.users.ports.output.user_repository_port import UserRepositoryPort
 from src.users.domain.dto.input_dto import InputUserDto, UserIdDto
 from src.users.domain.entities.user_entity import UserEntity
