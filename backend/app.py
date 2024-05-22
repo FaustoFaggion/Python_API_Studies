@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from src.users.adapters.output.dto_validation_json_schema import ValidateDtoJsonSchema
 from src.users.adapters.output.dto_validation_pydantic import ValidateDtoPydantic
 from src.users.ports.input.user_service_port import UserServicePort
 from src.users.adapters.output.user_repository_postgres import UserRepositoryPostgres
@@ -18,7 +19,7 @@ database = SqliteDb()
 database.createTables()
 
 # To create an instance of UserController and access its blueprint:
-dto_validation: ValidateDtoPort = ValidateDtoPydantic()
+dto_validation: ValidateDtoPort = ValidateDtoJsonSchema()
 user_repo: UserRepositoryPort = UserRepositorySqlite(database)
 user_service: UserServicePort = UserService(user_repo, dto_validation)
 user_controller = UserController(user_service)

@@ -3,16 +3,18 @@ import jsonschema
 from jsonschema import validate
 from src.users.domain.dto.input_dto import InputUserDto, UserIdDto
 from src.users.ports.output.validate_dto_port import ValidateDtoPort
-from pydantic import BaseModel, EmailStr, Field, validator
+from pydantic import BaseModel, EmailStr, Field, validator, Extra
 
 class ValidateDtoPydantic(ValidateDtoPort):
 
     class InputUserSchema(BaseModel):
+
         email: EmailStr
         name: str
         age: int = Field(..., gt=0)  # age must be greater than 0
         password: str
 
+        
         @validator('name')
         def name_must_not_be_empty(cls, v):
             if not v or v.strip() == "":
@@ -26,13 +28,13 @@ class ValidateDtoPydantic(ValidateDtoPort):
             return v
         
         class Config:
-            extra = "forbid"
+            extra = Extra.forbid
 
     class UserIdSchema(BaseModel):
         email: EmailStr
         
-        class Config:
-            extra = "forbid"
+        # class Config:
+        #     extra = "forbid"
 
     def validate_dto(self, dto):
             if not dto:
