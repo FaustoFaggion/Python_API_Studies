@@ -21,3 +21,7 @@ class UserIdDto:
         
     def __init__(self, json_data):
         self.email = json_data["email"]
+
+        additional_properties = set(json_data.keys()) - {"email"}
+        if additional_properties:
+            raise TypeError("json has additional properties")
