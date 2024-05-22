@@ -4,7 +4,7 @@ import json
 import sqlite3
 from src.users.ports.output.user_repository_port import UserRepositoryPort
 from src.users.domain.dto.input_dto import InputUserDto, UserIdDto
-from src.users.domain.user_entity import UserEntity, user_factory
+from src.users.domain.entities.user_entity import UserEntity, user_factory
 from dataBase.adapters.sqlite_db import SqliteDb
 from dataBase.ports.database_port import Database_Port
 

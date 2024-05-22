@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 import json
-from src.users.domain.user_entity import UserEntity
+from src.users.domain.entities.user_entity import UserEntity
 
 @dataclass
 class OutputUserDto:

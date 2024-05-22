@@ -1,9 +1,5 @@
 from abc import ABC, abstractmethod
 from typing import Any
-from src.users.domain.dto.input_dto import InputUserDto
-from src.users.domain.user_entity import UserEntity
-from src.users.ports.output.user_repository_port import UserRepositoryPort
-
 
 class UserServicePort(ABC):
         

@@ -2,7 +2,7 @@ from typing import List
 from flask import request, jsonify
 from src.users.ports.output.user_repository_port import UserRepositoryPort
 from src.users.ports.input.user_service_port import UserServicePort
-from src.users.domain.user_entity import UserEntity
+from src.users.domain.entities.user_entity import UserEntity
 from src.users.domain.dto.input_dto import InputUserDto, UserIdDto
 from src.users.domain.dto.output_dto import *
 from src.users.ports.output.validate_dto_port import ValidateDtoPort
