@@ -3,6 +3,7 @@ import json
 import sqlite3
 import werkzeug
 from flask import Blueprint, request, jsonify, make_response
+from src.users.domain.dto.input_dto import InputUserDto, UserIdDto
 from src.users.useCases.user_service import UserService
 from src.users.ports.input.user_service_port import UserServicePort
 from src.users.ports.output.user_repository_port import UserRepositoryPort
@@ -27,7 +28,8 @@ class UserController:
         print("USER CONTROLLER")
         try:
             json_data = request.get_json()
-            user = self.user_service.create(json_data)
+            dto: InputUserDto = InputUserDto(json_data)
+            user = self.user_service.create(dto)
             dto_dict = asdict(user)
             response = json.dumps(dto_dict)
             
@@ -46,7 +48,8 @@ class UserController:
         try:
             json_data = request.get_json()
             print(json_data)
-            user = self.user_service.update(json_data)
+            dto: InputUserDto = InputUserDto(json_data)
+            user = self.user_service.update(dto)
             dto_dict = asdict(user)
             response = json.dumps(dto_dict)
             
@@ -66,7 +69,8 @@ class UserController:
         try:
             json_data = {'email': email}
             print(json_data)
-            self.user_service.delete(json_data)
+            dto: UserIdDto = UserIdDto(json_data)
+            self.user_service.delete(dto)
             response = "User deleted", 204        
         except TypeError as e:
             return make_response(jsonify({"error a": str(e)}), 415)  # Retorna 500 Internal Server Error para outros erros
@@ -84,7 +88,8 @@ class UserController:
         try:
             json_data = {'email': email}
             print(json_data)
-            user = self.user_service.find_one(json_data)
+            dto: UserIdDto = UserIdDto(json_data)
+            user = self.user_service.find_one(dto)
             dto_dict = asdict(user)
             response = json.dumps(dto_dict)
             
@@ -100,40 +105,3 @@ class UserController:
 
     def find_all(self):
         return self.user_service.find_all()
-
-
-
-
-# from flask import Blueprint, request
-# from src.users.user_service import UserService
-# from src.users.user_repository import UserRepository
-# from src.users.dto.input_dto import CreateUserDto
-
-
-# # Initialize repository and service
-# user_repository = UserRepository()
-# user_service = UserService(user_repository)
-
-# controller = Blueprint("user_controller", __name__, static_folder="static", template_folder="template")
-
-
-# @controller.route('/create', methods= ['POST'])
-# def create():
-#     return user_service.create()
-
-# @controller.route('/update', methods= ['POST'])
-# def update():
-#     return user_service.update()
-
-# @controller.route('/delete/<email>', methods= ['DELETE'])
-# def delete(email):
-#     print(email)
-#     return user_service.delete(email)
-
-# @controller.route('/findOne/<email>', methods= ['GET'])
-# def findOne(email):
-#     return user_service.findOne(email)
-
-# @controller.route('/findAll', methods= ['GET'])
-# def findAll():
-#     return user_service.findAll()

@@ -1,14 +1,13 @@
 
-
 POST http://localhost:5000/users/create HTTP/1.1
 Content-Type: application/json
 
 {
     "email":"vc@email.com",
     "name":"nmddd",
-    "age":40,
-    "password":"123"
-    # "outra": "erro"
+    "age":"30",
+    "password":"12345678",
+    "outra": "erro"
 }
 
 ###
@@ -19,8 +18,8 @@ Content-Type: application/json
 {
     "email":"eu@email.com",
     "name":"nmddd",
-    "age":40,
-    "password":"123"
+    "age":28,
+    "password":"12345678"
     # "outra": "erro"
 }
 
@@ -29,6 +28,7 @@ Content-Type: application/json
 DELETE http://localhost:5000/users/delete/vc@email.com HTTP/1.1
 
 ###
+
 
 GET http://localhost:5000/users/find_all HTTP/1.1
 

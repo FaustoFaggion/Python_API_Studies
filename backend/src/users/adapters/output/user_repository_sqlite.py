@@ -1,3 +1,4 @@
+from typing import List
 from flask import request, jsonify
 import json
 import sqlite3
@@ -85,9 +86,9 @@ class UserRepositorySqlite(UserRepositoryPort):
         cursor = conn.cursor()
         
         cursor.execute("SELECT * FROM users")
-        users = [
-            dict(email=row[0], name=row[1], age=row[2], password=row[3])
+        users: List[UserEntity] = [
+            user_factory(row)
             for row in cursor.fetchall()
         ]
-        if users is not None:
-            return jsonify(users)
+        
+        return users

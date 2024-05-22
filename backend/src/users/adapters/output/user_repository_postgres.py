@@ -1,6 +1,8 @@
+from typing import List
 from flask import request, jsonify
 import json
 import sqlite3
+from src.users.domain.dto.output_dto import OutputUserDto, output_dto_factory
 from src.users.ports.output.user_repository_port import UserRepositoryPort
 from src.users.domain.dto.input_dto import InputUserDto, UserIdDto
 from src.users.domain.user_entity import UserEntity, user_factory
@@ -17,7 +19,6 @@ class UserRepositoryPostgres(UserRepositoryPort):
         conn = self.database.db_connection()
         cursor = conn.cursor()
         
-        # sql = """INSERT INTO users (email, name, age, password) VALUES(?, ?, ?, ?)"""
         sql = """INSERT INTO users (email, name, age, password) VALUES(%s, %s, %s, %s)"""
         cursor.execute(sql, (dto.email, dto.name, dto.age, dto.password))
         conn.commit()
@@ -32,8 +33,6 @@ class UserRepositoryPostgres(UserRepositoryPort):
         
     def update(self, dto: InputUserDto):
         print("USER REPOSITORY Update")
-        print(dto.email)
-        print(dto.age)
         conn = self.database.db_connection()
         cursor = conn.cursor()
          
@@ -85,9 +84,9 @@ class UserRepositoryPostgres(UserRepositoryPort):
         cursor = conn.cursor()
         
         cursor.execute("SELECT * FROM users")
-        users = [
-            dict(email=row[0], name=row[1], age=row[2], password=row[3])
+        users: List[UserEntity] = [
+            user_factory(row)
             for row in cursor.fetchall()
         ]
-        if users is not None:
-            return jsonify(users)
+        
+        return users
