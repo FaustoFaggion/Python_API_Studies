@@ -2,6 +2,7 @@
 from dataclasses import dataclass
 
 
+# implementing __init__, __repr__, __eq__ behind the scenes
 @dataclass
 class UserEntity:
     email:      str
@@ -9,10 +10,8 @@ class UserEntity:
     age:        int
     password:   str
     
-def user_factory(data: tuple) -> UserEntity:
-    return UserEntity(
-        email=data[0],
-        name=data[1],
-        age=data[2],
-        password=data[3]
-    )
+    def __init__(self, data: tuple):
+        self.email=data[0]
+        self.name=data[1]
+        self.age=data[2]
+        self.password=data[3]

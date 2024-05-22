@@ -5,7 +5,7 @@ import sqlite3
 from src.users.domain.dto.output_dto import OutputUserDto, output_dto_factory
 from src.users.ports.output.user_repository_port import UserRepositoryPort
 from src.users.domain.dto.input_dto import InputUserDto, UserIdDto
-from src.users.domain.entities.user_entity import UserEntity, user_factory
+from src.users.domain.entities.user_entity import UserEntity
 from dataBase.adapters.sqlite_db import SqliteDb
 from dataBase.ports.database_port import Database_Port
 
@@ -25,7 +25,7 @@ class UserRepositoryPostgres(UserRepositoryPort):
     
         cursor.execute("SELECT * FROM users WHERE email = %s", (dto.email,))
         new_user = cursor.fetchone()
-        response = user_factory(new_user)
+        response = UserEntity(new_user)
 
         conn.close
         
@@ -47,7 +47,7 @@ class UserRepositoryPostgres(UserRepositoryPort):
             conn.close()
             return None  
     
-        response = user_factory(user)
+        response = UserEntity(user)
 
         conn.close
         
@@ -72,7 +72,7 @@ class UserRepositoryPostgres(UserRepositoryPort):
         cursor.execute(sql, (dto.email,))
         user = cursor.fetchone()
         print(user)
-        response: UserEntity = user_factory(user)
+        response: UserEntity = UserEntity(user)
         print(response)
 
         conn.close
@@ -84,9 +84,7 @@ class UserRepositoryPostgres(UserRepositoryPort):
         cursor = conn.cursor()
         
         cursor.execute("SELECT * FROM users")
-        users: List[UserEntity] = [
-            user_factory(row)
-            for row in cursor.fetchall()
-        ]
-        
+        users: List[UserEntity] = []
+        for row in cursor.fetchall():
+            users.append(UserEntity(row))
         return users
