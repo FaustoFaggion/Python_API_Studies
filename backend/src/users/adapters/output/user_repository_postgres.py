@@ -84,7 +84,9 @@ class UserRepositoryPostgres(UserRepositoryPort):
         cursor = conn.cursor()
         
         cursor.execute("SELECT * FROM users")
-        users: List[UserEntity] = []
-        for row in cursor.fetchall():
-            users.append(UserEntity(row))
+        users: List[UserEntity] = [
+            UserEntity(row)
+            for row in cursor.fetchall()
+        ]
+        
         return users

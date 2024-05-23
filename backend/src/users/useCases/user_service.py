@@ -48,5 +48,5 @@ class UserService(UserServicePort):
         for user in users:
             response.append(OutputUserDto(user))
         
-        return response
+        return {"users": response}
     
