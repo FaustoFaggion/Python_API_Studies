@@ -104,4 +104,15 @@ class UserController:
         return response
 
     def find_all(self):
-        return self.user_service.find_all()
+        print("FIND ALL REPOSITORY")
+        try:
+            return self.user_service.find_all()
+        except TypeError as e:
+            return make_response(jsonify({"error a": str(e)}), 415)  # Retorna 500 Internal Server Error para outros erros
+        except sqlite3.IntegrityError as e:
+            return make_response(jsonify({ "error b": str(e)}), 400)
+        except werkzeug.exceptions.BadRequest as e:
+            return make_response(jsonify({"error c": str(e)}), 400) # erro  request.get_json()
+        except Exception as e:
+            return make_response(jsonify({ "error d": str(e)}), 500)
+        return response

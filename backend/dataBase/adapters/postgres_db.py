@@ -19,12 +19,14 @@ class PostgresDb(Database_Port):
                 dbname="mydb",
                 user="myuser",
                 password="mypassword",
-                host="127.0.0.1",
+                host="postgres", # to run local 127.0.0.1, to run into container postgres
                 port="5432",
             )
             print("Connection established successfully:", conn)
         except psycopg2.Error as e:
             print(e)
+        except Exception as e:
+            print("An error occurred:", e)
         return conn
     
     def createTables(self):
