@@ -11,12 +11,12 @@ from dataBase.ports.database_port import Database_Port
 from dataBase.adapters.sqlite_db import SqliteDb
 from dataBase.adapters.postgres_db import PostgresDb
 from src.users.adapters.input.user_controller import UserController
-
+from dataBase.adapters.schema import tables_schema
 # create the application object
 app = Flask(__name__)
 
 database = PostgresDb()
-database.createTables()
+database.createTables(tables_schema)
 
 # To create an instance of UserController and access its blueprint:
 dto_validation: ValidateDtoPort = ValidateDtoJsonSchema()

@@ -4,7 +4,7 @@ from typing import Any
 class UserServicePort(ABC):
         
     @abstractmethod
-    def create(json_data: str):
+    def create(json_data: any):
         ...
     
     @abstractmethod

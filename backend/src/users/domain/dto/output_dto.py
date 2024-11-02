@@ -8,7 +8,7 @@ class OutputUserDto:
     name:       str
     age:        int
     
-    def __init__(self, entity: UserEntity):
-        self.email = entity.email
-        self.name = entity.name
-        self.age = entity.age
+    def __init__(self, entity: dict):
+        self.email = entity["email"]
+        self.name = entity["name"]
+        self.age = entity["age"]

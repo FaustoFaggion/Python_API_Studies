@@ -11,7 +11,7 @@ class PostgresDb(Database_Port):
     def __init__(self):
        pass
     
-    def db_connection(self):
+    def db_connection(self, ):
         conn = None
         try:
             # url = os.getenv("DATA_URL")
@@ -19,7 +19,7 @@ class PostgresDb(Database_Port):
                 dbname="mydb",
                 user="myuser",
                 password="mypassword",
-                host="postgres", # to run local 127.0.0.1, to run into container postgres
+                host="127.0.0.1", # to run local 127.0.0.1, to run into container postgres
                 port="5432",
             )
             print("Connection established successfully:", conn)
@@ -29,7 +29,7 @@ class PostgresDb(Database_Port):
             print("An error occurred:", e)
         return conn
     
-    def createTables(self):
+    def createTables(self, tables_schema):
         print("CREATE TABLES...")
         conn = self.db_connection()
         if conn is None:
@@ -37,22 +37,15 @@ class PostgresDb(Database_Port):
             return
         try:
             cursor = conn.cursor()
-        
-            cursor.execute("""SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' And table_name = 'users';""")
-            table_exists = cursor.fetchone()
 
-            if not table_exists:
-                sql_query = """CREATE TABLE users (
-                    email       TEXT        PRIMARY KEY,
-                    name        TEXT        NOT NULL,
-                    age         INTEGER     NOT NULL,
-                    password    TEXT        NOT NULL
-                );"""
+
+            for table in tables_schema:
+                schema = tables_schema[table]
+                sql_query = f"CREATE TABLE IF NOT EXISTS {table} {schema}"
                 cursor.execute(sql_query)
                 print("Tabela 'users' criada com sucesso.")
                 conn.commit()
-            else:
-                print("Tabela 'users' já existe.")
+
         except psycopg2.Error as e:
             print(f"Error executing SQL: {e}")
             if conn:

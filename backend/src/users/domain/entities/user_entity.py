@@ -1,6 +1,4 @@
-
 from dataclasses import dataclass
-
 
 # implementing __init__, __repr__, __eq__ behind the scenes
 @dataclass
@@ -10,7 +8,7 @@ class UserEntity:
     age:        int
     password:   str
     
-    def __init__(self, data: tuple):
+    def __init__(self, *data):
         self.email=data[0]
         self.name=data[1]
         self.age=data[2]

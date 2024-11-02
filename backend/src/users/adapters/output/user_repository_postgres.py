@@ -4,34 +4,53 @@ import json
 import sqlite3
 from src.users.domain.dto.output_dto import OutputUserDto
 from src.users.ports.output.user_repository_port import UserRepositoryPort
-from src.users.domain.dto.input_dto import InputUserDto, UserIdDto
+from src.users.domain.dto.input_dto import InputUserDto, UserIdDto, InputUserBatchDto
 from src.users.domain.entities.user_entity import UserEntity
 from dataBase.adapters.sqlite_db import SqliteDb
 from dataBase.ports.database_port import Database_Port
+from dataBase.adapters.sql_syntax import SqlSyntax
 
 class UserRepositoryPostgres(UserRepositoryPort):
 
     def __init__(self, database: Database_Port) -> None:
         self.database = database
 
-    def create(self, dto: InputUserDto):
+    def sql_syntax(self):
+        conn = self.database.db_connection()
+        cursor = conn.cursor()
+
+        print("\n\nsql syntax function\n")
+        print(SqlSyntax.SELECT_column_FROM_table("users", "email", "age"))
+        print(SqlSyntax.SELECT_DISTINCT_column_FROM_table("users", "email", "age"))
+
+
+    def create(self, dto: InputUserBatchDto):
         print("USER REPOSITORY")
         conn = self.database.db_connection()
         cursor = conn.cursor()
         
         sql = """INSERT INTO users (email, name, age, password) VALUES(%s, %s, %s, %s)"""
-        cursor.execute(sql, (dto.email, dto.name, dto.age, dto.password))
-        conn.commit()
-    
-        cursor.execute("SELECT * FROM users WHERE email = %s", (dto.email,))
-        new_user = cursor.fetchone()
-        response = UserEntity(new_user)
-
-        conn.close
+        if not dto.users:
+            raise ValueError("No users to insert")
         
-        return response
+        cursor.executemany(sql, dto.users)
+        conn.commit()
+
+        inserted_emails = [user[0] for user in dto.users]
+        placeholders = ', '.join(['%s'] * len(inserted_emails))
+        
+        cursor.execute(f"SELECT * FROM users WHERE email IN ({placeholders})", inserted_emails)
+
+        new_users = cursor.fetchall()
+        print("new_Users: ", new_users)
+        response: List[UserEntity] = [
+            UserEntity(*row)for row in new_users] 
+        conn.close
+        print("new_Users: ", response)
+        return response   
         
     def update(self, dto: InputUserDto):
+        self.sql_syntax()
         print("USER REPOSITORY Update")
         conn = self.database.db_connection()
         cursor = conn.cursor()
@@ -85,8 +104,6 @@ class UserRepositoryPostgres(UserRepositoryPort):
         
         cursor.execute("SELECT * FROM users")
         users: List[UserEntity] = [
-            UserEntity(row)
-            for row in cursor.fetchall()
-        ]
+            UserEntity(row)for row in cursor.fetchall()] 
         
         return users

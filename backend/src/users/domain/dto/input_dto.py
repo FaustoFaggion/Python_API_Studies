@@ -16,6 +16,21 @@ class InputUserDto:
         if additional_properties:
             raise TypeError("json has additional properties")
         
+class InputUserBatchDto:
+
+    def __init__(self, json_data_list):
+
+
+        self.users: list[tuple[str, str,int,str]]
+        
+        self.users = []
+        for user in json_data_list:
+            user = user
+            print("user..: ", user)
+            self.users.append((user["email"], user["name"], user["age"], user["password"]))
+
+
+
 class UserIdDto:
     email:      str
         
