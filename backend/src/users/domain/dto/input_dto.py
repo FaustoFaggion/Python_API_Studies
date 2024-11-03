@@ -29,6 +29,16 @@ class InputUserBatchDto:
             print("user..: ", user)
             self.users.append((user["email"], user["name"], user["age"], user["password"]))
 
+class DeleteUserBatchDto:
+
+    def __init__(self, json_data_list):
+
+
+        self.users: list[tuple[str, str,int,str]]
+        
+        self.users = []
+        for user in json_data_list:
+            self.users.append((user["email"]))
 
 
 class UserIdDto:

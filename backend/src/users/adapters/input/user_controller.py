@@ -3,7 +3,7 @@ import json
 import sqlite3
 import werkzeug
 from flask import Blueprint, request, jsonify, make_response
-from src.users.domain.dto.input_dto import InputUserDto, UserIdDto, InputUserBatchDto
+from src.users.domain.dto.input_dto import InputUserDto, UserIdDto, InputUserBatchDto, DeleteUserBatchDto
 from src.users.useCases.user_service import UserService
 from src.users.ports.input.user_service_port import UserServicePort
 from src.users.ports.output.user_repository_port import UserRepositoryPort
@@ -20,7 +20,7 @@ class UserController:
     def register_routes(self):
         self.controller.route('/create', methods=['POST'])(self.create)
         self.controller.route('/update', methods=['PUT'])(self.update)
-        self.controller.route('/delete/<email>', methods=['DELETE'])(self.delete)
+        self.controller.route('/delete', methods=['DELETE'])(self.delete)
         self.controller.route('/find_one/<email>', methods=['GET'])(self.find_one)
         self.controller.route('/find_all', methods=['GET'])(self.find_all)
 
@@ -64,12 +64,15 @@ class UserController:
 
         return response
 
-    def delete(self, email):
+    def delete(self):
         print("USER CONTROLLER delete")
         try:
-            json_data = {'email': email}
+            # json_data = {'email': email}
+            # print(json_data)
+            # dto: UserIdDto = UserIdDto(json_data)
+            json_data = request.get_json()
             print(json_data)
-            dto: UserIdDto = UserIdDto(json_data)
+            dto: DeleteUserBatchDto = DeleteUserBatchDto(json_data)
             self.user_service.delete(dto)
             response = "User deleted", 204        
         except TypeError as e:

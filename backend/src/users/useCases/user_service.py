@@ -3,7 +3,7 @@ from flask import request, jsonify
 from src.users.ports.output.user_repository_port import UserRepositoryPort
 from src.users.ports.input.user_service_port import UserServicePort
 from src.users.domain.entities.user_entity import UserEntity
-from src.users.domain.dto.input_dto import InputUserDto, UserIdDto, InputUserBatchDto
+from src.users.domain.dto.input_dto import InputUserDto, UserIdDto, InputUserBatchDto, DeleteUserBatchDto
 from src.users.domain.dto.output_dto import *
 from src.users.ports.output.validate_dto_port import ValidateDtoPort
 from dataclasses import asdict
@@ -45,9 +45,9 @@ class UserService(UserServicePort):
 
         return json.dumps(response)
     
-    def delete(self, dto: UserIdDto):
+    def delete(self, dto: DeleteUserBatchDto):
         print("USER SERVICE Find_one")
-        self.dto_validation.validate_dto(dto)     
+        # self.dto_validation.validate_dto(dto)     
         self.user_repo.delete(dto)
 
     def find_one(self, dto: UserIdDto):

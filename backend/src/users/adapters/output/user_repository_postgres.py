@@ -4,7 +4,7 @@ import json
 import sqlite3
 from src.users.domain.dto.output_dto import OutputUserDto
 from src.users.ports.output.user_repository_port import UserRepositoryPort
-from src.users.domain.dto.input_dto import InputUserDto, UserIdDto, InputUserBatchDto
+from src.users.domain.dto.input_dto import InputUserDto, UserIdDto, InputUserBatchDto, DeleteUserBatchDto
 from src.users.domain.entities.user_entity import UserEntity
 from dataBase.adapters.sqlite_db import SqliteDb
 from dataBase.ports.database_port import Database_Port
@@ -49,7 +49,7 @@ class UserRepositoryPostgres(UserRepositoryPort):
         print("new_Users: ", response)
         return response   
         
-    def update(self, dto: InputUserBatchDto):
+    def update(self, dto: DeleteUserBatchDto):
         print("USER REPOSITORY Update")
         conn = self.database.db_connection()
         cursor = conn.cursor()
@@ -76,12 +76,13 @@ class UserRepositoryPostgres(UserRepositoryPort):
         print("new_Users: ", response)
         return response   
     
-    def delete(self, dto):
+    def delete(self, dto: InputUserBatchDto):
         conn = self.database.db_connection()
         cursor = conn.cursor()
-         
-        sql = """DELETE FROM users WHERE email=%s"""
-        cursor.execute(sql, (dto.email,))
+        print("dto.users: ", dto.users)
+        
+        sql = f"DELETE FROM users WHERE email IN {tuple(dto.users)}"
+        cursor.executemany(sql, dto.users)
         conn.commit()
          
         if cursor.rowcount == 0:

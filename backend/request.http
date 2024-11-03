@@ -26,6 +26,14 @@ DELETE http://localhost:5000/users/delete/eu@email.com HTTP/1.1
 
 ###
 
+DELETE http://localhost:5000/users/delete HTTP/1.1
+Content-Type: application/json 
+
+[
+    {"email": "vc@email.com"},
+    {"email": "eu@email.com"}
+]
+###
 
 PUT http://localhost:5000/users/update HTTP/1.1
 Content-Type: application/json
