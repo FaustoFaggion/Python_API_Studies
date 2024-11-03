@@ -29,7 +29,7 @@ class UserRepositoryPostgres(UserRepositoryPort):
         conn = self.database.db_connection()
         cursor = conn.cursor()
         
-        sql = """INSERT INTO users (email, name, age, password) VALUES(%s, %s, %s, %s)"""
+        sql = """INSERT INTO users (email, name, age, password) VALUES(%s, %s, %s, %s);"""
         if not dto.users:
             raise ValueError("No users to insert")
         
@@ -49,28 +49,32 @@ class UserRepositoryPostgres(UserRepositoryPort):
         print("new_Users: ", response)
         return response   
         
-    def update(self, dto: InputUserDto):
-        self.sql_syntax()
+    def update(self, dto: InputUserBatchDto):
         print("USER REPOSITORY Update")
         conn = self.database.db_connection()
         cursor = conn.cursor()
-         
-        sql = """UPDATE users SET name=%s, age=%s, password=%s Where email=%s"""
-        cursor.execute(sql, (dto.name, dto.age, dto.password, dto.email))
-        conn.commit()
-    
-        cursor.execute("SELECT * FROM users WHERE email = %s", (dto.email,))
-        user = cursor.fetchone()
         
-        if user is None:
-            conn.close()
-            return None  
-    
-        response = UserEntity(user)
+        # sql = """UPDATE users SET name=%s, age=%s, password=%s Where email=%s"""
+        query = """INSERT INTO users (email, name, age, password) values(%s, %s, %s, %s) ON CONFLICT (email) DO UPDATE SET name=EXCLUDED.name, age=EXCLUDED.age;"""
+        
+        print("Executing query: ", query)
+        print("With parameters: ", dto.users)
 
-        conn.close
+        cursor.executemany(query, dto.users)
+        conn.commit()
+        print("aaaa")
+        inserted_emails = [user[0] for user in dto.users]
+        placeholders = ', '.join(['%s'] * len(inserted_emails))
         
-        return response
+        cursor.execute(f"SELECT * FROM users WHERE email IN ({placeholders})", inserted_emails)
+
+        updated_users = cursor.fetchall()
+        print("updated_users: ", updated_users)
+        response: List[UserEntity] = [
+            UserEntity(*row)for row in updated_users] 
+        conn.close
+        print("new_Users: ", response)
+        return response   
     
     def delete(self, dto):
         conn = self.database.db_connection()

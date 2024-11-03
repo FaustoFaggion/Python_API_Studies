@@ -16,22 +16,34 @@ class UserService(UserServicePort):
     def create(self, dto: InputUserBatchDto):
         print("USER SERVICE")
         # self.dto_validation.validate_dto(dto)     
-        users: List[UserEntity] = self.user_repo.create(dto)
+        user_entities: list[UserEntity] = self.user_repo.create(dto)
 
-        print("User SErvice users: ", users)  
-        response: List[OutputUserDto] = []
-        for user in users:
-            response.append(OutputUserDto(asdict(user)))
-        return response
+        dto_list: List[OutputUserDto] = []
+        for entity in user_entities:
+            dto_list.append(OutputUserDto(asdict(entity)))
+        
+        response: list = []
+        for user in dto_list:
+           response.append(asdict(user))
+
+        return json.dumps(response) 
+
         
 
     def update(self, dto: InputUserDto):
         print("USER SERVICE Update")
-        self.dto_validation.validate_dto(dto)     
-        user: UserEntity = self.user_repo.update(dto)
+        # self.dto_validation.validate_dto(dto)     
+        user_entities: list[UserEntity] = self.user_repo.update(dto)
         
-        response: OutputUserDto = OutputUserDto(user)
-        return response
+        dto_list: List[OutputUserDto] = []
+        for entity in user_entities:
+            dto_list.append(OutputUserDto(asdict(entity)))
+        
+        response: list = []
+        for user in dto_list:
+           response.append(asdict(user))
+
+        return json.dumps(response)
     
     def delete(self, dto: UserIdDto):
         print("USER SERVICE Find_one")

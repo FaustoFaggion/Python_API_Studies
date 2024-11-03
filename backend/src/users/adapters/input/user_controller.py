@@ -31,11 +31,7 @@ class UserController:
             # dto: InputUserDto = InputUserDto(json_data)
             dto: InputUserBatchDto = InputUserBatchDto(json_data)
             users = self.user_service.create(dto)
-            response = []
-            
-            for user in users:
-                print("controller user: ",user)
-                response.append(json.dumps(asdict(user)))
+            return users
             
         except TypeError as e:
             return make_response(jsonify({"error a": str(e)}), 415)  # Retorna 500 Internal Server Error para outros erros
@@ -52,10 +48,10 @@ class UserController:
         try:
             json_data = request.get_json()
             print(json_data)
-            dto: InputUserDto = InputUserDto(json_data)
-            user = self.user_service.update(dto)
-            dto_dict = asdict(user)
-            response = json.dumps(dto_dict)
+            # dto: InputUserDto = InputUserDto(json_data)
+            dto: InputUserBatchDto = InputUserBatchDto(json_data)
+            users = self.user_service.update(dto)
+            return users
             
         except TypeError as e:
             return make_response(jsonify({"error a": str(e)}), 415)  # Retorna 500 Internal Server Error para outros erros
