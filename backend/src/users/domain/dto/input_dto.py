@@ -1,4 +1,5 @@
 import json
+from dataclasses import dataclass
 
 class InputUserDto:
     email:      str
@@ -15,19 +16,17 @@ class InputUserDto:
         additional_properties = set(json_data.keys()) - {"email", "name", "age", "password"}
         if additional_properties:
             raise TypeError("json has additional properties")
-        
+
+    def to_tuple(self):
+        return (self.email, self.name, self.age, self.password)
+
 class InputUserBatchDto:
 
     def __init__(self, json_data_list):
+        self.users: list[InputUserDto] = []
 
-
-        self.users: list[tuple[str, str,int,str]]
-        
-        self.users = []
-        for user in json_data_list:
-            user = user
-            print("user..: ", user)
-            self.users.append((user["email"], user["name"], user["age"], user["password"]))
+        for json_data in json_data_list:
+            self.users.append(InputUserDto(json_data))
 
 class DeleteUserBatchDto:
 

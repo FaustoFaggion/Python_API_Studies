@@ -2,7 +2,7 @@ import json
 from flask import jsonify
 import jsonschema
 from jsonschema import validate
-from src.users.domain.dto.input_dto import InputUserDto, InputUserBatchDto, UserIdDto
+from src.users.domain.dto.input_dto import InputUserBatchDto, UserIdDto
 from src.users.ports.output.validate_dto_list_port import ValidateDtoListPort
 
 class ValidateDtoListJsonSchema(ValidateDtoListPort):
@@ -28,20 +28,16 @@ class ValidateDtoListJsonSchema(ValidateDtoListPort):
     }
 
     def validate_dto(self, dto_list):
-        print("VALIDATE DTO")
         if not dto_list:
             return jsonify({ "error": "Invalid JSON data"})
-        
-        if isinstance(dto_list, InputUserBatchDto):
-            for dto in dto_list.users:
-                user_dict = dto.__dict__   
-                print(user_dict)
-                try:
-                    validate(instance=user_dict, schema=self.INPUT_USER_SCHEMA)
-                    print("Validation successful.")
-                except jsonschema.exceptions.ValidationError as e:
-                    return jsonify({"error": f"Validation failed: {e.message}"}), 400
-        # elif isinstance(dto_list, UserIdDto):
-        #     validate(instance=user_dict, schema=self.USER_ID_SCHEMA)
+
+        for dto in  dto_list:   
+            user_dict = dto.__dict__   
+            print(user_dict)
+            if isinstance(dto, InputUserBatchDto):
+                validate(instance=user_dict, schema=self.INPUT_USER_SCHEMA)
+                print("Validation successful.")
+            if isinstance(dto, UserIdDto):
+                validate(instance=user_dict, schema=self.USER_ID_SCHEMA)
 
         return None

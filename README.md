@@ -30,3 +30,12 @@ Python API
       * $ source backend/bin/active
     * Install Flask
       * $ pip install Flask
+
+
+# TESTS
+
+## PyTest
+
+### Installl
+
+    $ sudo pip install pytest

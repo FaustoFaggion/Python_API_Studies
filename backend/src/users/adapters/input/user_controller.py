@@ -4,6 +4,7 @@ import sqlite3
 import werkzeug
 from flask import Blueprint, request, jsonify, make_response
 from src.users.domain.dto.input_dto import InputUserDto, UserIdDto, InputUserBatchDto, DeleteUserBatchDto
+from src.users.domain.dto.output_dto import OutputUserDto
 from src.users.useCases.user_service import UserService
 from src.users.ports.input.user_service_port import UserServicePort
 from src.users.ports.output.user_repository_port import UserRepositoryPort
@@ -27,11 +28,18 @@ class UserController:
     def create(self):
         print("USER CONTROLLER")
         try:
+            # GET JSON DATA FROM REQUEST
             json_data = request.get_json()
-            # dto: InputUserDto = InputUserDto(json_data)
+
+            # SEND JSON DATA AS DTO TO SERVICE MODULE
             dto: InputUserBatchDto = InputUserBatchDto(json_data)
-            users = self.user_service.create(dto)
-            return users
+            output_dto_list: list[OutputUserDto] = self.user_service.create(dto)
+            
+            # Transfor OutputUserDto LIST INTO JSON TO RESPOND
+            response: list = []
+            for user in output_dto_list:
+                response.append(asdict(user))
+            return json.dumps(response)
             
         except TypeError as e:
             return make_response(jsonify({"error a": str(e)}), 415)  # Retorna 500 Internal Server Error para outros erros

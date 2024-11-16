@@ -9,6 +9,7 @@ from src.users.domain.entities.user_entity import UserEntity
 from dataBase.adapters.sqlite_db import SqliteDb
 from dataBase.ports.database_port import Database_Port
 from dataBase.adapters.sql_syntax import SqlSyntax
+from dataclasses import asdict, astuple
 
 class UserRepositoryPostgres(UserRepositoryPort):
 
@@ -24,27 +25,34 @@ class UserRepositoryPostgres(UserRepositoryPort):
         print(SqlSyntax.SELECT_DISTINCT_column_FROM_table("users", "email", "age"))
 
 
-    def create(self, dto: InputUserBatchDto):
+    def create(self, entities_list: list[UserEntity]):
         print("USER REPOSITORY")
+
+        #PREPARE DATA TO EXECUTEMANY FUNCTION
+        users_list: list[tuple] = []
+        for entity in entities_list:
+            users_list.append(entity.to_tuple())
+
         conn = self.database.db_connection()
         cursor = conn.cursor()
         
         sql = """INSERT INTO users (email, name, age, password) VALUES(%s, %s, %s, %s);"""
-        if not dto.users:
-            raise ValueError("No users to insert")
+        # if not dto.users:
+        #     raise ValueError("No users to insert")
         
-        cursor.executemany(sql, dto.users)
+        cursor.executemany(sql, users_list)
         conn.commit()
-
-        inserted_emails = [user[0] for user in dto.users]
+        print("ok")
+        inserted_emails = [user[0] for user in users_list]
         placeholders = ', '.join(['%s'] * len(inserted_emails))
         
         cursor.execute(f"SELECT * FROM users WHERE email IN ({placeholders})", inserted_emails)
 
         new_users = cursor.fetchall()
         print("new_Users: ", new_users)
-        response: List[UserEntity] = [
-            UserEntity(*row)for row in new_users] 
+        response: List[UserEntity] = []
+        for user in new_users:
+            response.append(UserEntity(user)) 
         conn.close
         print("new_Users: ", response)
         return response   

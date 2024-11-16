@@ -5,28 +5,39 @@ from src.users.ports.input.user_service_port import UserServicePort
 from src.users.domain.entities.user_entity import UserEntity
 from src.users.domain.dto.input_dto import InputUserDto, UserIdDto, InputUserBatchDto, DeleteUserBatchDto
 from src.users.domain.dto.output_dto import *
-from src.users.ports.output.validate_dto_port import ValidateDtoPort
-from dataclasses import asdict
+from src.users.ports.output.validate_dto_list_port import ValidateDtoListPort
+from dataclasses import asdict, astuple
+
 class UserService(UserServicePort):
     
-    def __init__(self, user_repo: UserRepositoryPort, dto_validation: ValidateDtoPort):
+    def __init__(self, user_repo: UserRepositoryPort, dto_validation: ValidateDtoListPort):
         self.user_repo = user_repo
         self.dto_validation = dto_validation
         
-    def create(self, dto: InputUserBatchDto):
+    def create(self, dto_list: InputUserBatchDto):
         print("USER SERVICE")
-        # self.dto_validation.validate_dto(dto)     
-        user_entities: list[UserEntity] = self.user_repo.create(dto)
-
-        dto_list: List[OutputUserDto] = []
-        for entity in user_entities:
-            dto_list.append(OutputUserDto(asdict(entity)))
+        # VALIDATE IF RECEIVED DATA IS ACORDING ENTITY
+        self.dto_validation.validate_dto(dto_list)     
         
-        response: list = []
-        for user in dto_list:
-           response.append(asdict(user))
+        # INSTANCIATE ENTITIES FROM DTO TO SAVE INTO DATABASE
+        users_tuple_list: list[tuple] = []
+        for dto in dto_list.users:
+            users_tuple_list.append(dto.to_tuple())
+            
+        users_entity_list: list[UserEntity] = []
+        for user_tuple in users_tuple_list:
+            print("entity: ", users_entity_list)
+            users_entity_list.append(UserEntity(user_tuple))
+            
+        # SEND Entity TO SAVE INTO DATABASE
+        user_entities: list[UserEntity] = self.user_repo.create(users_entity_list)
 
-        return json.dumps(response) 
+        # GET OUTPUT DATA FROM USER ENTITY
+        response: List[OutputUserDto] = []
+        for entity in user_entities:
+            response.append(OutputUserDto(entity.__dict__))
+        
+        return response 
 
         
 

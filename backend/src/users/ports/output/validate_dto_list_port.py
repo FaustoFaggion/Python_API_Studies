@@ -2,7 +2,7 @@
 from abc import ABC
 
 
-class ValidateDtoPort(ABC):
+class ValidateDtoListPort(ABC):
     
     def validate_dto(dto):
         ...
