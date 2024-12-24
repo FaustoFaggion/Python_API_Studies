@@ -1,3 +1,4 @@
+import re
 
 class DatabaseSchema:
 
@@ -45,15 +46,25 @@ class DatabaseSchema:
         }
     ]
 
+    table_columns = {}
 
-    table_columns = {
-        "users":               "(email, name, age, password)",
-        "cylinder_bore_mobil": "(diam_int, diam_ext, max_course, max_compr, conex_diam, conex_type, weight, material, condition)",
-        "cylinder_rod_mobil":  "(diam, curso, ponta_haste, max_compr, weight, material)",
-        "cylinder":            "(rod_diam, bore_diam, type)"
-    }
+    def create_table_columns(self):
+        for table_dict in self.tables_schema:
+            for key, value in table_dict.items():
+                column_key = key
+                schema = value.strip("()").strip()
+                # Split the schema by lines (columns)
+                lines = schema.split(",\n")
+                # Extract the first word of each line (the column name)
+                columns = [re.match(r'^\s*(\w+)', line).group(1) for line in lines if line.strip() and "FOREIGN" not in line and "SERIAL" not in line]
+                column_names = f"({', '.join(columns)})"
+                self.table_columns[column_key] = column_names
+                
+        print("table_columns: ", self.table_columns)
 
-
+    def __init__(self):
+        self.create_table_columns
+    
     # "cylinder_rod":     """(
     #                         id          INTEGER     PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     #                         diameter    INTEGER     NOT NULL,

@@ -24,8 +24,9 @@ app = create_app()
 
 print("app name: ")
 database = PostgresDb()
-database.createTables(DatabaseSchema)
-database.seed_database(DatabaseSchema)
+database_schema = DatabaseSchema()
+database.createTables(database_schema)
+database.seed_database(database_schema)
 
 # To create an instance of UserController and access its blueprint:
 dto_validation: ValidateDtoListPort = ValidateDtoListJsonSchema()

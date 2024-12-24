@@ -62,6 +62,7 @@ class PostgresDb(Database_Port):
 
     def seed_database(self, database_schema: DatabaseSchema):
         print("SEED TABLES...")
+        database_schema.create_table_columns()
         
         conn = self.db_connection()
         if conn is None:
@@ -71,7 +72,7 @@ class PostgresDb(Database_Port):
             cursor = conn.cursor()
 
             for table in database_schema.tables_schema:
-                print("table: ", table)
+                # print("table: ", table)
                 for key, value in table.items():
                     table_name = key
                     table_columns = database_schema.table_columns[key]
@@ -80,11 +81,11 @@ class PostgresDb(Database_Port):
                     for query_dict in query_values:
                         print('------')
                         for key, value in query_dict.items():
-                            print("table_name: ", table_name)
-                            print("key: ", key)
+                            # print("table_name: ", table_name)
+                            # print("key: ", key)
                             if table_name == key:
                                 executemany_values = value
-                                print("executemany: ", executemany_values)
+                                # print("executemany: ", executemany_values)
 
                                 if executemany_values:
                                     placeholders = ', '.join(['%s'] * len(executemany_values[0]))
