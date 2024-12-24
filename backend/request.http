@@ -41,7 +41,7 @@ Content-Type: application/json
 [
     {
         "email":"vc@email.com",
-        "name":"finalmente....uffaaa",
+        "name":"uffa",
         "age":28,
         "password":"12345678"
         # "outra": "erro"
@@ -62,3 +62,7 @@ GET http://localhost:5000/users/find_all HTTP/1.1
 ###
 
 GET http://localhost:5000/users/find_one/vc@email.com HTTP/1.1
+
+###
+
+GET http://localhost:5000/cylinders/find_one/3 HTTP/1.1

@@ -35,7 +35,7 @@ class UserController:
             dto: InputUserBatchDto = InputUserBatchDto(json_data)
             output_dto_list: list[OutputUserDto] = self.user_service.create(dto)
             
-            # Transfor OutputUserDto LIST INTO JSON TO RESPOND
+            # TRANSFORM OutputUserDto LIST INTO JSON TO RESPOND
             response: list = []
             for user in output_dto_list:
                 response.append(asdict(user))
@@ -58,8 +58,13 @@ class UserController:
             print(json_data)
             # dto: InputUserDto = InputUserDto(json_data)
             dto: InputUserBatchDto = InputUserBatchDto(json_data)
-            users = self.user_service.update(dto)
-            return users
+            output_dto_list: list[OutputUserDto] = self.user_service.update(dto)
+            
+            # TRANSFORM OutputUserDto LIST INTO JSON TO RESPOND
+            response: list = []
+            for user in output_dto_list:
+                response.append(asdict(user))
+            return json.dumps(response)
             
         except TypeError as e:
             return make_response(jsonify({"error a": str(e)}), 415)  # Retorna 500 Internal Server Error para outros erros
@@ -82,7 +87,9 @@ class UserController:
             print(json_data)
             dto: DeleteUserBatchDto = DeleteUserBatchDto(json_data)
             self.user_service.delete(dto)
+        
             response = "User deleted", 204        
+        
         except TypeError as e:
             return make_response(jsonify({"error a": str(e)}), 415)  # Retorna 500 Internal Server Error para outros erros
         except sqlite3.IntegrityError as e:

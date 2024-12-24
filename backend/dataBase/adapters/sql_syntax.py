@@ -11,9 +11,12 @@ class SqlSyntax:
         return query_syntax
     
     def SELECT_DISTINCT_column_FROM_table(table_name, *columns):
+
         """The SELECT DISTINCT statement is used to return only distinct (different) values."""
         
         query_columns = ", ".join(columns)
         query_syntax = f'SELECT DISTINCT {query_columns} FROM {table_name}'
         return query_syntax
         
+
+    

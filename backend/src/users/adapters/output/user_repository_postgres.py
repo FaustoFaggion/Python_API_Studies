@@ -33,90 +33,154 @@ class UserRepositoryPostgres(UserRepositoryPort):
         for entity in entities_list:
             users_list.append(entity.to_tuple())
 
+        # CREATE DATABASE CONNECTION
         conn = self.database.db_connection()
         cursor = conn.cursor()
         
+        # DEFINE SQL QUERY
         sql = """INSERT INTO users (email, name, age, password) VALUES(%s, %s, %s, %s);"""
-        # if not dto.users:
-        #     raise ValueError("No users to insert")
-        
-        cursor.executemany(sql, users_list)
+
+        # EXECUTE QUERY TO DATABASE
+        cursor.executemany(sql, entities_list)
+
+        # SAVE CHANGE PERMANENTLY INTO DATABASE
         conn.commit()
-        print("ok")
+
+        # GET DATA TO RETURN TO SERVICE MODULE
         inserted_emails = [user[0] for user in users_list]
         placeholders = ', '.join(['%s'] * len(inserted_emails))
         
+        # EXECUTE QUERY TO DATABASE
         cursor.execute(f"SELECT * FROM users WHERE email IN ({placeholders})", inserted_emails)
-
         new_users = cursor.fetchall()
-        print("new_Users: ", new_users)
+        print("before new_Users: ", new_users)
+
+        # CLOSE CONNECTION AND CURSOR
+        cursor.close()
+        conn.close()
+        
+        # CREATE ENTITIES LIST TO RETURN TO SERVICE MODULE
         response: List[UserEntity] = []
         for user in new_users:
             response.append(UserEntity(user)) 
-        conn.close
-        print("new_Users: ", response)
+        
         return response   
         
-    def update(self, dto: DeleteUserBatchDto):
-        print("USER REPOSITORY Update")
+    def update(self, entities_list: list[UserEntity]):
+        print("USER REPOSITORY UPDATE")
+
+        #PREPARE DATA TO EXECUTEMANY FUNCTION
+        users_list: list[tuple] = []
+        for entity in entities_list:
+            user_tuple = (entity.name, entity.age, entity.password, entity.email)
+            users_list.append(user_tuple)
+        
+        # CREATE DATABASE CONNECTION
         conn = self.database.db_connection()
         cursor = conn.cursor()
         
-        # sql = """UPDATE users SET name=%s, age=%s, password=%s Where email=%s"""
-        query = """INSERT INTO users (email, name, age, password) values(%s, %s, %s, %s) ON CONFLICT (email) DO UPDATE SET name=EXCLUDED.name, age=EXCLUDED.age;"""
+        # DEFINE SQL QUERY
+        query = "UPDATE users SET name = %s, age = %s, password = %s WHERE email = %s"
         
-        print("Executing query: ", query)
-        print("With parameters: ", dto.users)
-
-        cursor.executemany(query, dto.users)
+        # EXECUTE QUERY TO DATABASE
+        cursor.executemany(query, users_list)
+        
+        # SAVE CHANGE PERMANENTLY INTO DATABASE
         conn.commit()
-        print("aaaa")
-        inserted_emails = [user[0] for user in dto.users]
-        placeholders = ', '.join(['%s'] * len(inserted_emails))
-        
-        cursor.execute(f"SELECT * FROM users WHERE email IN ({placeholders})", inserted_emails)
 
+        # DEFINE SQL QUERY TO RETURN DATA
+        inserted_emails = [user[3] for user in users_list]
+        placeholders = ', '.join(['%s'] * len(inserted_emails))
+        query = f"SELECT * FROM users WHERE email IN ({placeholders})"
+
+        # EXECUTE QUERY TO DATABASE
+        cursor.execute(query, inserted_emails)
         updated_users = cursor.fetchall()
         print("updated_users: ", updated_users)
-        response: List[UserEntity] = [
-            UserEntity(*row)for row in updated_users] 
-        conn.close
-        print("new_Users: ", response)
+        
+        # CLOSE CONNECTION AND CURSOR
+        cursor.close()
+        conn.close()
+
+        # CREATE ENTITIES LIST TO RETURN TO SERVICE MODULE
+        response: List[UserEntity] = []
+        for user in updated_users:
+            response.append(UserEntity(user)) 
+        
         return response   
     
     def delete(self, dto: InputUserBatchDto):
+        print("DELETE REPOSITORY")
+        
+        #PREPARE DATA TO EXECUTEMANY FUNCTION
+        users = tuple(dto.users)
+        print("users_email: ", users)
+
+        # CREATE DATABASE CONNECTION
         conn = self.database.db_connection()
         cursor = conn.cursor()
-        print("dto.users: ", dto.users)
         
-        sql = f"DELETE FROM users WHERE email IN {tuple(dto.users)}"
-        cursor.executemany(sql, dto.users)
+        # DEFINE SQL QUERY
+        sql = f"DELETE FROM users WHERE email IN {users}"
+
+        # EXECUTE QUERY TO DATABASE
+        cursor.executemany(sql, users)
+        
+        # SAVE CHANGE PERMANENTLY INTO DATABASE
         conn.commit()
-         
+
+        # CLOSE CONNECTION AND CURSOR
+        cursor.close()
+        conn.close()
+        
         if cursor.rowcount == 0:
             raise sqlite3.IntegrityError("User not found")
+    
+        return None
 
     def find_one(self, dto: UserIdDto):
+        print("FIND ONE")
+        # CREATE DATABASE CONNECTION
         conn = self.database.db_connection()
         cursor = conn.cursor()
         
+        # DEFINE SQL QUERY
         sql = """SELECT * FROM users WHERE email=%s"""
+        
+        # EXECUTE QUERY TO DATABASE
         cursor.execute(sql, (dto.email,))
         user = cursor.fetchone()
         print(user)
-        response: UserEntity = UserEntity(user)
-        print(response)
 
-        conn.close
+        # CLOSE CONNECTION AND CURSOR
+        cursor.close()
+        conn.close()
         
+        # CREATE ENTITY TO RETURN TO SERVICE MODULE
+        response: UserEntity = UserEntity(user)
+
         return response
         
     def find_all(self):
+
+        # CREATE DATABASE CONNECTION
         conn = self.database.db_connection()
         cursor = conn.cursor()
         
-        cursor.execute("SELECT * FROM users")
-        users: List[UserEntity] = [
-            UserEntity(row)for row in cursor.fetchall()] 
+        # DEFINE SQL QUERY
+        query = "SELECT * FROM users"
         
-        return users
+        # EXECUTE QUERY TO DATABASE
+        cursor.execute(query)
+        entities = cursor.fetchall()
+
+        # CLOSE CONNECTION AND CURSOR
+        cursor.close()
+        conn.close()
+
+        # CREATE ENTITIES LIST TO RETURN TO SERVICE MODULE
+        response: list[UserEntity] = []
+        for user_entity in entities:
+            response.append(UserEntity(user_entity)) 
+
+        return response
