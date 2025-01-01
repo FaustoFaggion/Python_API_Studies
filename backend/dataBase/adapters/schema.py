@@ -36,10 +36,12 @@ class DatabaseSchema:
         },
         {
         'cylinder':       """(
-                                id          SERIAL          PRIMARY KEY,
-                                rod_diam    INTEGER         NOT NULL,
-                                bore_diam   INTEGER         NOT NULL,
-                                type        VARCHAR(50)     NOT NULL,
+                                id              SERIAL      PRIMARY KEY,
+                                mec_efficiency  FLOAT       NOT NULL,
+                                hid_efficiency  FLOAT       NOT NULL,
+                                rod_diam        INTEGER     NOT NULL,
+                                bore_diam       INTEGER     NOT NULL,
+                                type            VARCHAR(50) NOT NULL,
                                 FOREIGN KEY (bore_diam) REFERENCES "cylinder_bore_mobil" (diam_int),
                                 FOREIGN KEY (rod_diam) REFERENCES "cylinder_rod_mobil" (diam)
                             )"""
